@@ -14,12 +14,12 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { request, setLocalJWT } from '../axios-instance';
-import { emitNotification } from '../notification';
-import EventBus from '../event-bus';
+import { request, setLocalJWT } from '../utils/api';
+import { emitNotification } from '../utils/notification';
+import EventBus from '../utils/event-bus';
 
 export default {
-  name: 'LandingPage',
+  name: 'PageLanding',
   setup() {
     const inputUsername = ref('2018013379');
     const inputPassword = ref('937194');

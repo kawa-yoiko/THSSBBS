@@ -8,12 +8,11 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { request, getLocalJWT, setLocalJWT, getLocalUser }
-  from '../axios-instance';
-import EventBus from '../event-bus';
+import { request, getLocalJWT, setLocalJWT, getLocalUser } from '../utils/api';
+import EventBus from '../utils/event-bus';
 
 export default {
-  name: 'GlobalHeader',
+  name: 'LayoutHeader',
   setup() {
     const user = ref(null);
 

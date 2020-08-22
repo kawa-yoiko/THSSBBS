@@ -1,5 +1,5 @@
 <template>
-  <global-header></global-header>
+  <layout-header></layout-header>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <router-view />
@@ -7,18 +7,18 @@
 </template>
 
 <script>
-import GlobalHeader from './components/GlobalHeader.vue'
+import LayoutHeader from './components/LayoutHeader.vue'
 import HelloWorld from './components/HelloWorld.vue'
-import LandingPage from './components/LandingPage.vue'
+import PageLanding from './components/PageLanding.vue'
 
 export default {
   name: 'App',
   setup() {
   },
   components: {
-    GlobalHeader,
+    LayoutHeader,
     HelloWorld,
-    LandingPage
+    PageLanding,
   }
 }
 </script>
