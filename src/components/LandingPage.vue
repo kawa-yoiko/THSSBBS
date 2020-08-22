@@ -33,8 +33,9 @@ export default {
       const [status, data] = await request('PATCH', '/login', {
           username: inputUsername.value,
           password: inputPassword.value,
-        }, false,
-        () => logInInProgress.value = false
+        },
+        () => logInInProgress.value = false,
+        null  // No authorization
       );
 
       if (status >= 200 && status < 299) {

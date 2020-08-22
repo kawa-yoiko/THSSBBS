@@ -11,7 +11,7 @@ const on = (ev, fn) => {
 const emit = (ev, arg) => {
   let table = handlers[ev];
   if (table !== undefined) {
-    table.forEach((fn) => fn(arg));
+    table.forEach((fn) => Promise.resolve(fn(arg)).then());
   }
 };
 

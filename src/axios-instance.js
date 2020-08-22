@@ -10,30 +10,37 @@ const ax = axios.create({
   timeout: 3000,
 });
 
-// Local cache for credentials
+// Local cache for credentials and user profile
 
 let localJWT = null;
+let localUser = null;
 
 const getLocalJWT = () => {
   if (localJWT !== null) return localJWT;
-  if (localStorage.jwt !== null) return (localJWT = localStorage.jwt);
+  if (localStorage.jwt) return (localJWT = localStorage.jwt);
   return null;
 };
 const setLocalJWT = (t) => {
   localStorage.jwt = localJWT = t;
+  if (t === null) delete localStorage.jwt;
+  localUser = null;   // Invalidate user profile cache
 }
 
 // Send requests
 // Returns [status, data or message]
 // `status` is 0 for NetworkError and other non-HTTP errors
 
-const request = (method, url, data, auth, fin) => new Promise((resolve, _) => {
+// `auth`: null denotes no authorization,
+// undefined (omitted) denotes local JWT,
+// and other values are directly used as the token
+
+const request = (method, url, data, fin, auth) => new Promise((resolve, _) => {
   ax({
     method,
     url,
     data,
-    headers: !auth ? {} : {
-      'Authorization': getLocalJWT()
+    headers: auth === null ? {} : {
+      'Authorization': (auth === undefined ? getLocalJWT() : auth)
     },
   }).then((resp) => resolve([resp.status, resp.data]))
     .catch((err) => {
@@ -50,8 +57,6 @@ const request = (method, url, data, auth, fin) => new Promise((resolve, _) => {
 
 // Local cache for user profile
 
-let localUser = null;
-
 const getLocalUser = async () => {
   if (localUser !== null) return localUser;
   const jwt = getLocalJWT();
@@ -60,6 +65,9 @@ const getLocalUser = async () => {
     const [status, data] = await request('GET', '/user', {}, true);
     if (status >= 200 && status < 299) {
       return (localUser = data);
+    } else {
+      // Local JWT has expired
+      setLocalJWT(null);
     }
   }
   return null;

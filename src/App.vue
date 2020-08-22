@@ -1,4 +1,5 @@
 <template>
+  <global-header></global-header>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <router-view />
@@ -6,18 +7,16 @@
 </template>
 
 <script>
+import GlobalHeader from './components/GlobalHeader.vue'
 import HelloWorld from './components/HelloWorld.vue'
 import LandingPage from './components/LandingPage.vue'
-import EventBus from './event-bus';
 
 export default {
   name: 'App',
   setup() {
-    EventBus.on('logged-in', () => {
-      console.log('logged in!');
-    });
   },
   components: {
+    GlobalHeader,
     HelloWorld,
     LandingPage
   }
