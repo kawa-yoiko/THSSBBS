@@ -8,9 +8,15 @@
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 import LandingPage from './components/LandingPage.vue'
+import EventBus from './event-bus';
 
 export default {
   name: 'App',
+  setup() {
+    EventBus.on('logged-in', () => {
+      console.log('logged in!');
+    });
+  },
   components: {
     HelloWorld,
     LandingPage

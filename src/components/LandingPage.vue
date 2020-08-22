@@ -16,6 +16,7 @@ import { useRouter } from 'vue-router';
 
 import { request, setLocalJWT } from '../axios-instance';
 import { emitNotification } from '../notification';
+import EventBus from '../event-bus';
 
 export default {
   name: 'LandingPage',
@@ -40,6 +41,7 @@ export default {
         console.log(data);
         setLocalJWT(data.jwt);
         router.push('/hello');
+        EventBus.emit('logged-in');
       } else if (status >= 400 && status < 499) {
         emitNotification(data);
       } else {
