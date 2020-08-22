@@ -1,36 +1,58 @@
 <template>
   <div>Landing page</div>
-  <div>{{ responseText }}</div>
-  <button @click="qwq">Button</button>
-  <button @click="quq">hello</button>
-  <router-link to="/hello">hello</router-link>
+  <input v-model='inputUsername' placeholder='username' /><br>
+  <input v-model='inputPassword' placeholder='password' type='password' /><br>
+  <div v-if='logInInProgress'>
+    sending request
+  </div>
+  <div v-else>
+    <button @click='logIn'>Log In</button>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import ax from '../axios-instance';
 import { useRouter } from 'vue-router';
+
+import { request, setLocalJWT } from '../axios-instance';
+import { emitNotification } from '../notification';
 
 export default {
   name: 'LandingPage',
   setup() {
-    const responseText = ref('no response');
+    const inputUsername = ref('2018013379');
+    const inputPassword = ref('937194');
+    const logInInProgress = ref(false);
+
     const router = useRouter();
-    const qwq = () => {
-      ax.get('/hello')
-        .then((resp) => responseText.value = resp.data);
-      ax.get('/hello/v1/hello-user')
-        .then((resp) => console.log('data', resp.data))
-        .catch((err) => console.log('error', err.response.status));
-    };
-    const quq = () => {
-      router.push('/hello');
+
+    const logIn = async () => {
+      logInInProgress.value = true;
+
+      const [status, data] = await request('PATCH', '/login', {
+          username: inputUsername.value,
+          password: inputPassword.value,
+        }, false,
+        () => logInInProgress.value = false
+      );
+
+      if (status >= 200 && status < 299) {
+        console.log(data);
+        setLocalJWT(data.jwt);
+        router.push('/hello');
+      } else if (status >= 400 && status < 499) {
+        emitNotification(data);
+      } else {
+        emitNotification(data); // Should be marked as unknown
+      }
     };
 
     return {
-      responseText,
-      qwq,
-      quq,
+      inputUsername,
+      inputPassword,
+      logInInProgress,
+
+      logIn,
     };
   }
 };
