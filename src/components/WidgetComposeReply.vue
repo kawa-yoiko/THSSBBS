@@ -10,6 +10,7 @@
     </div>
     <div v-else>
       <button @click='sendReply'>Post</button>
+      <button @click='onCancel' v-if='parentId !== 0'>Cancel</button>
     </div>
   </div>
 </template>
@@ -22,7 +23,7 @@ import { request } from '../utils/api';
 export default {
   name: 'WidgetComposeReply',
   props: [
-    'postId', 'parentId', 'onSent',
+    'postId', 'parentId', 'onSent', 'onCancel',
   ],
   setup(props) {
     const replyContents = ref('');
@@ -63,7 +64,7 @@ export default {
 <style scoped>
 .container {
   text-align: left;
-  margin: 0 200px;
+  margin-bottom: 12px;
 }
 textarea {
   font-family: inherit;

@@ -25,18 +25,20 @@
     </div>
   </div>
   <div v-if='postId !== -1'>
-  <hr>
-  {{ postReplies.length }} reply/replies
-  <div class='replies'>
-    <div class='post' v-for='reply in postReplies' :key='reply.id'>
-      <widget-reply :level='0'
-        :postId='postId' :reply='reply'
-        :localUserId='localUser.id'
-        @editComplete='refreshPost'/>
+    <hr>
+    {{ postReplies.length }} reply/replies
+    <div class='replies'>
+      <div class='post' v-for='reply in postReplies' :key='reply.id'>
+        <widget-reply :level='0'
+          :postId='postId' :reply='reply'
+          :localUserId='localUser.id'
+          @editOrReplyComplete='refreshPost'/>
+      </div>
     </div>
-  </div>
-  <br>
-  <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
+    <br>
+    <div class='post'>
+      <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
+    </div>
   </div>
 </template>
 

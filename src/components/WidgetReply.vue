@@ -7,6 +7,7 @@
       </span>
       by {{ reply.user }} at {{ reply.createdAt }}
     </strong>
+    <button @click='startComposingReply'>Reply</button>
     <button v-if='reply.user.id === localUserId'
         @click='startEditingReply(reply)'>
       Edit
@@ -24,22 +25,32 @@
       </div>
     </div>
     <p v-else v-html='replyContent'></p>
+    <widget-compose-reply v-if='composingReply'
+      :post-id='postId' :parent-id='reply.id'
+      @sent='doneComposingReply'
+      @cancel='composingReply = false' />
     <div v-for='subreply in reply.replies' :key='subreply.id'>
       <widget-reply :level='level + 1'
         :postId='postId' :reply='subreply'
         :localUserId='localUserId'
-        @editComplete='onEditComplete'/>
+        @editOrReplyComplete='onEditOrReplyComplete'/>
     </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
+
+import WidgetComposeReply from './WidgetComposeReply.vue';
 import { request } from '../utils/api';
 
 export default {
   name: 'WidgetReply',
-  props: ['level', 'postId', 'reply', 'localUserId', 'onEditComplete'],
+  components: { WidgetComposeReply },
+  props: [
+    'level', 'postId', 'reply', 'localUserId',
+    'onEditOrReplyComplete'
+  ],
   setup(props) {
     const replyContent = ref(props.reply.content);
 
@@ -62,11 +73,22 @@ export default {
 
       if (status >= 200 && status < 299) {
         replyContent.value = editingReplyContent.value;
-        props.onEditComplete.call();
+        props.onEditOrReplyComplete.call();
       }
 
       sendEditReplyInProgress.value = false;
       editingReply.value = false;
+    };
+
+    const composingReply = ref(false);
+
+    const startComposingReply = () => {
+      composingReply.value = true;
+    };
+
+    const doneComposingReply = () => {
+      composingReply.value = false;
+      props.onEditOrReplyComplete.call();
     };
 
     return {
@@ -76,6 +98,10 @@ export default {
       sendEditReplyInProgress,
       startEditingReply,
       doneEditingReply,
+
+      composingReply,
+      startComposingReply,
+      doneComposingReply,
     };
   }
 };
