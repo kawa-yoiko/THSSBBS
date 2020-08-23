@@ -2,9 +2,11 @@
   <p>Posts page</p>
   <p>Total: {{ postCount }}</p>
   <div class='post' v-for='post in posts' :key='post.id'>
-    [<strong>{{ post.title }}</strong>]
+    <router-link :to='"/post/" + post.id'>
+      [<strong>{{ post.title }}</strong>]
+    </router-link>
     by {{ post.nickname }} at {{ post.created }}
-    <p>{{ post.content }}</p>
+    <p>{{ post.content.substr(0, 300) }}</p>
     <br>
   </div>
 </template>
@@ -29,12 +31,10 @@ export default {
       if (filterUser.value !== null) {
         params.userId = filterUser.value.id;
       }
-      const resp = await request(
-        'GET', '/post', params,
-      );
-      if (resp[0] >= 200 && resp[0] < 299) {
-        postCount.value = resp[1].total;
-        posts.value = resp[1].posts;
+      const [status, body] = await request('GET', '/post', params);
+      if (status >= 200 && status < 299) {
+        postCount.value = body.total;
+        posts.value = body.posts;
       }
     };
     await updatePosts();

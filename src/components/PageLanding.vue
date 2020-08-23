@@ -30,7 +30,7 @@ export default {
     const logIn = async () => {
       logInInProgress.value = true;
 
-      const [status, data] = await request('PATCH', '/login', {
+      const [status, body] = await request('PATCH', '/login', {
           username: inputUsername.value,
           password: inputPassword.value,
         },
@@ -39,14 +39,14 @@ export default {
       );
 
       if (status >= 200 && status < 299) {
-        console.log(data);
-        setLocalJWT(data.jwt);
+        console.log(body);
+        setLocalJWT(body.jwt);
         router.push('/posts');
         EventBus.emit('logged-in');
       } else if (status >= 400 && status < 499) {
-        emitNotification(data);
+        emitNotification(body);
       } else {
-        emitNotification(data); // Should be marked as unknown
+        emitNotification(body); // Should be marked as unknown
       }
     };
 

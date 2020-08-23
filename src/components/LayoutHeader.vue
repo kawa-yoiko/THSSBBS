@@ -41,7 +41,7 @@ export default {
       await updateProfileDisp();
       // Network request goes at the end
       // since other updates do not need to wait for its completion
-      const [status, data] = await request(
+      const [status, body] = await request(
         'PATCH', '/logout', {}, undefined, prevJWT);
     };
 

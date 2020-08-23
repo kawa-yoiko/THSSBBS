@@ -5,12 +5,14 @@ import App from './App.vue'
 import HelloWorld from './components/HelloWorld.vue'
 import PageLanding from './components/PageLanding.vue'
 import PagePosts from './components/PagePosts.vue'
+import PagePost from './components/PagePost.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: PageLanding },
     { path: '/posts', component: PagePosts },
+    { path: '/post/:id', component: PagePost },
     { path: '/hello', component: HelloWorld },
   ],
 })
