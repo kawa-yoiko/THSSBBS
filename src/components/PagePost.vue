@@ -15,7 +15,11 @@
       </div>
     </div>
     <div v-else>
-      <h2><span style='color: #aaa'>#{{ postId }}</span> {{ postTitle }}</h2>
+      <h2>
+        <span style='color: #aaa'>#{{ postId }}</span> {{ postTitle }}
+        <button v-if='postUser.id === localUser.id'
+          @click='startEditingPost'>Edit</button>
+      </h2>
       <p class='by'>by {{ postUser }} at {{ postCreatedAt }}</p>
       <p v-html='postContent'></p>
     </div>
@@ -44,7 +48,7 @@
           sending
         </div>
         <div v-else>
-          <button @click='doneEditing'>Done</button>
+          <button @click='doneEditingReply'>Done</button>
           <button @click='editingReplyId = -1'>Cancel</button>
         </div>
       </div>
@@ -138,11 +142,12 @@ export default {
           router.replace(`/post/${newId}`);
           postId.value = newId;
         }
-        await refreshPost();
       }
 
       editingPost.value = false;
       sendEditPostInProgress.value = false;
+
+      await refreshPost();
     };
 
     const editingReplyId = ref(-1);

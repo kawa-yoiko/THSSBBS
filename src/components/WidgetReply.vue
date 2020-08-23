@@ -43,6 +43,7 @@ export default {
       );
 
       if (status >= 200 && status < 299) {
+        replyContents.value = '';
         props.onSent.call();
       }
       
