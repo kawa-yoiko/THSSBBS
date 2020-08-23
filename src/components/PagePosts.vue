@@ -1,6 +1,7 @@
 <template>
   <p>Posts page</p>
   <p>Total: {{ postCount }}</p>
+  <router-link to='/post/create'>Create post</router-link>
   <div class='post' v-for='post in posts' :key='post.id'>
     <strong>
       <span style='color: #aaa'>#{{ post.id }}&nbsp;</span>

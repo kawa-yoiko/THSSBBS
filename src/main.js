@@ -12,7 +12,7 @@ const router = createRouter({
   routes: [
     { path: '/', component: PageLanding },
     { path: '/posts', component: PagePosts },
-    { path: '/post/:id', component: PagePost },
+    { path: '/post/:id(\\d+|create)', component: PagePost },
     { path: '/hello', component: HelloWorld },
   ],
 })
