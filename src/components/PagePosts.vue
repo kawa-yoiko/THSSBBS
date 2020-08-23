@@ -23,12 +23,16 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+
 import { request } from '../utils/api';
+import EventBus from '../utils/event-bus';
 
 export default {
   name: 'PagePosts',
   async setup() {
+    onMounted(() => EventBus.emit('routerViewLoaded'));
+
     const postCount = ref(0);
     const curPage = ref(1);
     const posts = ref([]);

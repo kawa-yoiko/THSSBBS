@@ -61,16 +61,19 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import WidgetReply from './WidgetReply.vue';
 import { request, getLocalUser } from '../utils/api';
+import EventBus from '../utils/event-bus';
 
 export default {
   name: 'PagePost',
   components: { WidgetReply },
   async setup() {
+    onMounted(() => EventBus.emit('routerViewLoaded'));
+
     const route = useRoute();
     const router = useRouter();
 
