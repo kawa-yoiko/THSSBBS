@@ -19,16 +19,20 @@
       <p v-html='reply.content'></p>
     </div>
   </div>
+  <br>
+  <widget-reply :post-id='postId' :parent-id='0' @sent='updatePost' />
 </template>
 
 <script>
 import { ref, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
+import WidgetReply from './WidgetReply.vue';
 import { request } from '../utils/api';
 
 export default {
   name: 'PagePost',
+  components: { WidgetReply },
   async setup() {
     const route = useRoute();
 
