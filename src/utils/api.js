@@ -64,9 +64,14 @@ const getLocalUser = async () => {
   const jwt = getLocalJWT();
   if (jwt !== null) {
     // Try logging in
-    const [status, data] = await request('GET', '/user', {}, true);
+    const [status, body] = await request('GET', '/user', {}, true);
     if (status >= 200 && status < 299) {
-      return (localUser = data);
+      return (localUser = {
+        id: body.id,
+        username: body.username,
+        nickname: body.nickname,
+        createdAt: new Date(body.created),
+      });
     } else {
       // Local JWT has expired
       setLocalJWT(null);

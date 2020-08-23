@@ -1,11 +1,23 @@
 <template>
   <p>Single post page</p>
   <div class='post'>
-    {{ postId }}<br>
-    <h2>{{ postTitle }}</h2>
-    by {{ postUser }} at {{ postCreatedAt }}
-    <br>
-    {{ postContent }}
+    <h2><span style='color: #aaa'>#{{ postId }}</span> {{ postTitle }}</h2>
+    <p class='by'>by {{ postUser }} at {{ postCreatedAt }}</p>
+    <p v-html='postContent'></p>
+  </div>
+  <hr>
+  {{ postReplies.length }} reply/replies
+  <div class='replies'>
+    <div class='post' v-for='reply in postReplies' :key='reply.id'>
+      <strong>
+        <span style='color: #aaa'>^{{ reply.id }}</span>
+        <span style='color: #88f' v-if='reply.parent !== 0'>
+          → ^{{ reply.parent }}
+        </span>
+        by {{ reply.user }} at {{ reply.createdAt }}
+      </strong>
+      <p v-html='reply.content'></p>
+    </div>
   </div>
 </template>
 
@@ -34,9 +46,20 @@ export default {
         postUser.id = body.userId;
         postUser.nickname = body.nickname;
         postTitle.value = body.title;
-        postCreatedAt.value = body.created;
-        postUpdatedAt.value = body.updated;
+        postCreatedAt.value = new Date(body.created);
+        postUpdatedAt.value = new Date(body.updated);
         postContent.value = body.content;
+        postReplies.value = body.reply.map((reply) => ({
+          id: reply.id,
+          parent: reply.replyId,
+          user: {
+            id: reply.userId,
+            nickname: reply.nickname,
+          },
+          content: reply.content,
+          createdAt: new Date(reply.created),
+          updatedAt: new Date(reply.updated),
+        }));
       }
     };
 
@@ -61,5 +84,9 @@ export default {
 .post {
   text-align: left;
   margin: 0 200px;
+}
+.by {
+  color: #aaa;
+  margin: -2ex 0 2ex 0;
 }
 </style>
