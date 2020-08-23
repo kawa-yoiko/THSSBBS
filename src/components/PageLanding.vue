@@ -41,7 +41,7 @@ export default {
       if (status >= 200 && status < 299) {
         console.log(data);
         setLocalJWT(data.jwt);
-        router.push('/hello');
+        router.push('/posts');
         EventBus.emit('logged-in');
       } else if (status >= 400 && status < 499) {
         emitNotification(data);

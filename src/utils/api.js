@@ -35,14 +35,16 @@ const setLocalJWT = (t) => {
 // and other values are directly used as the token
 
 const request = (method, url, data, fin, auth) => new Promise((resolve, _) => {
-  ax({
+  const opts = {
     method,
     url,
-    data,
     headers: auth === null ? {} : {
       'Authorization': (auth === undefined ? getLocalJWT() : auth)
     },
-  }).then((resp) => resolve([resp.status, resp.data]))
+  };
+  opts[method.toUpperCase() === 'GET' ? 'params' : 'data'] = data;
+  ax(opts)
+    .then((resp) => resolve([resp.status, resp.data]))
     .catch((err) => {
       if (err.response !== null &&
           err.response.status >= 400 &&

@@ -1,15 +1,18 @@
 <template>
   <layout-header></layout-header>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <router-view />
-  </div>
+  <hr>
+  <Suspense>
+    <template #default>
+      <router-view />
+    </template>
+    <template #fallback>
+      loading
+    </template>
+  </Suspense>
 </template>
 
 <script>
 import LayoutHeader from './components/LayoutHeader.vue'
-import HelloWorld from './components/HelloWorld.vue'
-import PageLanding from './components/PageLanding.vue'
 
 export default {
   name: 'App',
@@ -17,8 +20,6 @@ export default {
   },
   components: {
     LayoutHeader,
-    HelloWorld,
-    PageLanding,
   }
 }
 </script>
