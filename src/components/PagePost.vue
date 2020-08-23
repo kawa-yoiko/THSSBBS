@@ -16,11 +16,26 @@
         </span>
         by {{ reply.user }} at {{ reply.createdAt }}
       </strong>
-      <p v-html='reply.content'></p>
+      <button v-if='editingReplyId !== reply.id && reply.user.id === localUser.id'
+          @click='startEditing(reply)'>
+        Edit
+      </button>
+      <div v-if='editingReplyId === reply.id'>
+        editing
+        <textarea v-model='editingReplyContent' />
+        <br>
+        <div v-if='sendEditReplyInProgress'>
+          sending
+        </div>
+        <div v-else>
+          <button @click='doneEditing'>Done</button>
+        </div>
+      </div>
+      <p v-else v-html='reply.content'></p>
     </div>
   </div>
   <br>
-  <widget-reply :post-id='postId' :parent-id='0' @sent='updatePost' />
+  <widget-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
 </template>
 
 <script>
@@ -28,7 +43,7 @@ import { ref, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import WidgetReply from './WidgetReply.vue';
-import { request } from '../utils/api';
+import { request, getLocalUser } from '../utils/api';
 
 export default {
   name: 'PagePost',
@@ -44,7 +59,7 @@ export default {
     const postContent = ref('');
     const postReplies = ref([]);
 
-    const updatePost = async () => {
+    const refreshPost = async () => {
       const [status, body] = await request('GET', '/post/' + postId.value);
       if (status >= 200 && status < 299) {
         postUser.id = body.userId;
@@ -67,7 +82,32 @@ export default {
       }
     };
 
-    await updatePost();
+    await refreshPost();
+
+    const editingReplyId = ref(-1);
+    const editingReplyContent = ref('');
+    const sendEditReplyInProgress = ref(false);
+
+    const startEditing = (reply) => {
+      editingReplyId.value = reply.id;
+      editingReplyContent.value = reply.content;
+    };
+
+    const doneEditing = async () => {
+      sendEditReplyInProgress.value = true;
+
+      const [status, body] = await request(
+        'PUT', `/post/${postId.value}/reply/${editingReplyId.value}`,
+        { content: editingReplyContent.value }
+      );
+
+      if (status >= 200 && status < 299) {
+        await refreshPost();
+      }
+
+      sendEditReplyInProgress.value = false;
+      editingReplyId.value = -1;
+    };
 
     return {
       postId,
@@ -78,7 +118,15 @@ export default {
       postContent,
       postReplies,
 
-      updatePost,
+      editingReplyId,
+      editingReplyContent,
+      sendEditReplyInProgress,
+
+      localUser: await getLocalUser(),
+
+      refreshPost,
+      startEditing,
+      doneEditing,
     };
   }
 };
