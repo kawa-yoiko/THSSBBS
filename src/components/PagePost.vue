@@ -56,7 +56,7 @@
     </div>
   </div>
   <br>
-  <widget-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
+  <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
   </div>
 </template>
 
@@ -64,13 +64,13 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import WidgetReply from './WidgetReply.vue';
+import WidgetComposeReply from './WidgetComposeReply.vue';
 import { request, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
 
 export default {
   name: 'PagePost',
-  components: { WidgetReply },
+  components: { WidgetComposeReply },
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
 

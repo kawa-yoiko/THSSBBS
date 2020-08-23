@@ -20,7 +20,7 @@ import { ref } from 'vue';
 import { request } from '../utils/api';
 
 export default {
-  name: 'WidgetReply',
+  name: 'WidgetComposeReply',
   props: [
     'postId', 'parentId', 'onSent',
   ],

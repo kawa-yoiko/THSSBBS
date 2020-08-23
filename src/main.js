@@ -20,7 +20,6 @@ const router = createRouter({
   async scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       await EventBus.wait('routerViewLoaded', 5000);
-      console.log(savedPosition);
       return savedPosition;
     } else {
       return { x: 0, y: 0 };
