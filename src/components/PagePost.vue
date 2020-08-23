@@ -29,30 +29,10 @@
   {{ postReplies.length }} reply/replies
   <div class='replies'>
     <div class='post' v-for='reply in postReplies' :key='reply.id'>
-      <strong>
-        <span style='color: #aaa'>^{{ reply.id }}</span>
-        <span style='color: #88f' v-if='reply.parent !== 0'>
-          → ^{{ reply.parent }}
-        </span>
-        by {{ reply.user }} at {{ reply.createdAt }}
-      </strong>
-      <button v-if='editingReplyId !== reply.id && reply.user.id === localUser.id'
-          @click='startEditingReply(reply)'>
-        Edit
-      </button>
-      <div v-if='editingReplyId === reply.id'>
-        editing
-        <textarea v-model='editingReplyContent' />
-        <br>
-        <div v-if='sendEditReplyInProgress'>
-          sending
-        </div>
-        <div v-else>
-          <button @click='doneEditingReply'>Done</button>
-          <button @click='editingReplyId = -1'>Cancel</button>
-        </div>
-      </div>
-      <p v-else v-html='reply.content'></p>
+      <widget-reply :level='0'
+        :postId='postId' :reply='reply'
+        :localUserId='localUser.id'
+        @editComplete='refreshPost'/>
     </div>
   </div>
   <br>
@@ -64,13 +44,14 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import WidgetReply from './WidgetReply.vue';
 import WidgetComposeReply from './WidgetComposeReply.vue';
 import { request, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
 
 export default {
   name: 'PagePost',
-  components: { WidgetComposeReply },
+  components: { WidgetReply, WidgetComposeReply },
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
 
@@ -94,7 +75,8 @@ export default {
         postCreatedAt.value = new Date(body.created);
         postUpdatedAt.value = new Date(body.updated);
         postContent.value = body.content;
-        postReplies.value = body.reply.map((reply) => ({
+        // List of replies
+        const list = body.reply.map((reply) => ({
           id: reply.id,
           parent: reply.replyId,
           user: {
@@ -104,7 +86,18 @@ export default {
           content: reply.content,
           createdAt: new Date(reply.created),
           updatedAt: new Date(reply.updated),
+          replies: [],
         }));
+        // Sorted list of replies, as a tree in brackets representation
+        const sortedList = [];
+        // Lookup table from reply ID to node's child list
+        const lookup = { 0: sortedList };
+        list.forEach((reply) => {
+          const parent = lookup[reply.parent];
+          parent.push(reply);
+          lookup[reply.id] = reply.replies;
+        });
+        postReplies.value = sortedList;
       }
     };
 
@@ -153,31 +146,6 @@ export default {
       await refreshPost();
     };
 
-    const editingReplyId = ref(-1);
-    const editingReplyContent = ref('');
-    const sendEditReplyInProgress = ref(false);
-
-    const startEditingReply = (reply) => {
-      editingReplyId.value = reply.id;
-      editingReplyContent.value = reply.content;
-    };
-
-    const doneEditingReply = async () => {
-      sendEditReplyInProgress.value = true;
-
-      const [status, body] = await request(
-        'PUT', `/post/${postId.value}/reply/${editingReplyId.value}`,
-        { content: editingReplyContent.value }
-      );
-
-      if (status >= 200 && status < 299) {
-        await refreshPost();
-      }
-
-      sendEditReplyInProgress.value = false;
-      editingReplyId.value = -1;
-    };
-
     return {
       postId,
       postUser,
@@ -193,12 +161,6 @@ export default {
       sendEditPostInProgress,
       startEditingPost,
       doneEditingPost,
-
-      editingReplyId,
-      editingReplyContent,
-      sendEditReplyInProgress,
-      startEditingReply,
-      doneEditingReply,
 
       localUser: await getLocalUser(),
 
