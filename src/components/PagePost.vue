@@ -54,7 +54,7 @@
     <div class='post'>
       <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost(0)' />
     </div>
-    <p>{{ postReplies.length }} reply/replies</p>
+    <p>{{ postRepliesCount }} reply/replies</p>
     <div class='replies'>
       <div class='post' v-for='reply in postReplies' :key='reply.id'>
         <widget-reply :level='0'
@@ -99,6 +99,7 @@ export default {
     const postUpdatedAt = ref(null);
     const postContent = ref('');
     const postReplies = ref(null);
+    const postRepliesCount = ref(0);
 
     // `parentToUpdate` is the parent reply of the newly created reply
     // or 0 if a new top-level reply has been created
@@ -131,6 +132,7 @@ export default {
           replies: [],
           visible: false,
         }));
+        postRepliesCount.value = list.length;
         // Sorted list of replies, as a tree in brackets representation
         const sortedList = [];
         // Lookup table from reply ID to node's child list
@@ -229,6 +231,7 @@ export default {
       postUpdatedAt,
       postContent,
       postReplies,
+      postRepliesCount,
 
       editingPost,
       editingPostTitle,
