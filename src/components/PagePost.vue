@@ -37,7 +37,12 @@
         <span style='color: #aaa; margin-left: 0.5em'>#{{ postId }}</span>
       </p>
       <p style='color: #aaa'>
-        by {{ postUser.nickname }} at {{ postCreatedAt }}
+        <widget-user-badge :user='postUser' />
+        <span style='margin: 0 0.25em'></span>
+        <widget-time :time='postCreatedAt' />
+        <template v-if='postCreatedAt < postUpdatedAt'>
+          <span>（更新于 <widget-time :time='postUpdatedAt' />）</span>
+        </template>
         <button v-if='postUser.id === localUser.id'
             @click='startEditingPost'
             class='ui basic right floated small button'
@@ -54,7 +59,7 @@
     <div class='post'>
       <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost(0)' />
     </div>
-    <p>{{ postRepliesCount }} reply/replies</p>
+    <p>{{ postRepliesCount }} 条回复</p>
     <div class='replies'>
       <div class='post' v-for='reply in postReplies' :key='reply.id'>
         <widget-reply :level='0'
@@ -77,6 +82,8 @@ import { useRoute, useRouter } from 'vue-router';
 
 import WidgetReply from './WidgetReply.vue';
 import WidgetComposeReply from './WidgetComposeReply.vue';
+import WidgetUserBadge from './WidgetUserBadge';
+import WidgetTime from './WidgetTime';
 import { request, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
 import {
@@ -85,7 +92,12 @@ import {
 
 export default {
   name: 'PagePost',
-  components: { WidgetReply, WidgetComposeReply },
+  components: {
+    WidgetReply,
+    WidgetComposeReply,
+    WidgetUserBadge,
+    WidgetTime,
+  },
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
 

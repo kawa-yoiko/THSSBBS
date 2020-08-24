@@ -1,12 +1,18 @@
 <template>
   <div class='reply-container' v-if='reply.visible'>
-    <strong>
-      <span style='color: #aaa'>^{{ reply.id }}</span>
-      <span style='color: #88f' v-if='reply.parent !== 0'>
-        → ^{{ reply.parent }}
-      </span>
-      by {{ reply.user.nickname }} at {{ reply.createdAt }}
-    </strong>
+    <span style='color: #aaa; margin-right: 0.5em'>
+      <widget-user-badge :user='reply.user' />
+      <span style='margin: 0 0.25em'></span>
+      <widget-time :time='reply.createdAt' />
+      <template v-if='reply.createdAt < reply.updatedAt'>
+        <span>（更新于 <widget-time :time='reply.updatedAt' />）</span>
+      </template>
+      <strong style='margin-left: 0.5em'>
+        <span>^{{ reply.id }}</span>
+        <span style='color: #88f' v-if='reply.parent !== 0'>
+          → ^{{ reply.parent }}</span>
+      </strong>
+    </span>
     <button @click='startComposingReply'
         class='ui compact mini basic icon button'
         data-tooltip='Reply'>
@@ -62,12 +68,18 @@
 import { ref, onMounted } from 'vue';
 
 import WidgetComposeReply from './WidgetComposeReply.vue';
+import WidgetUserBadge from './WidgetUserBadge';
+import WidgetTime from './WidgetTime';
 import { request } from '../utils/api';
 import { markRepliesAsVisible } from '../utils/reply-tree.js';
 
 export default {
   name: 'WidgetReply',
-  components: { WidgetComposeReply },
+  components: {
+    WidgetComposeReply,
+    WidgetUserBadge,
+    WidgetTime,
+  },
   props: [
     'level', 'postId', 'reply', 'localUserId',
     'onEditOrReplyComplete'

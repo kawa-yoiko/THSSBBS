@@ -13,15 +13,20 @@
         <span v-else  style='color: #aaa'>(Untitled)</span>
         <span style='color: #aaa; margin-left: 0.5em'>#{{ post.id }}</span>
       </p>
-      <div class='post-content-preview'>
-        {{ post.content.substr(0, 2000) }}
+      <div class='post-content-preview' v-html='post.content'>
       </div>
       <div class='post-content-preview-shadow'></div>
       <p style='color: #aaa'>
-        posted by {{ post.user }} at {{ post.createdAt }}
+        <widget-user-badge :user='post.user' />
+        <span style='margin: 0 0.25em'></span>
+        发布于
+        <widget-time :time='post.createdAt' />
         <span v-if='post.lastRepliedAt > post.createdAt'>
           <br>
-          last reply by {{ post.lastReplyUser }} at {{ post.lastRepliedAt }}
+          <widget-user-badge :user='post.lastReplyUser' />
+          <span style='margin: 0 0.25em'></span>
+          活动于
+          <widget-time :time='post.lastRepliedAt' />
         </span>
       </p>
     </div>
@@ -33,11 +38,17 @@
 <script>
 import { ref, onMounted } from 'vue';
 
+import WidgetUserBadge from './WidgetUserBadge';
+import WidgetTime from './WidgetTime';
 import { request } from '../utils/api';
 import EventBus from '../utils/event-bus';
 
 export default {
   name: 'PagePosts',
+  components: {
+    WidgetUserBadge,
+    WidgetTime,
+  },
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
 
