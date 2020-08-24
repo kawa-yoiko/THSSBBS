@@ -1,14 +1,20 @@
 <template>
   <layout-header></layout-header>
-  <hr>
-  <Suspense>
-    <template #default>
-      <router-view />
-    </template>
-    <template #fallback>
-      loading
-    </template>
-  </Suspense>
+  <div class='ui three column grid'>
+    <div class='two wide column'></div>
+    <div id='main' class='nine wide column'>
+      <Suspense>
+        <template #default>
+          <router-view />
+        </template>
+        <template #fallback>
+          loading
+        </template>
+      </Suspense>
+    </div>
+    <div class='three wide column' style='background: rgba(216, 216, 216, 0.8)'></div>
+    <div class='two wide column'></div>
+  </div>
 </template>
 
 <script>
@@ -25,12 +31,28 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+@import './assets/Semantic-UI-CSS/semantic.min.css';
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  color: #333;
+  background: #fefbfa;
+  margin-top: 60px;
+  margin-bottom: 60px;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+* {
+  font-family: 'Open Sans', sans-serif !important;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+}
+
+i.icon {
+  font-family: Icons !important;
 }
 </style>

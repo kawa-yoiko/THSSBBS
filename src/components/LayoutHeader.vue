@@ -1,7 +1,23 @@
 <template>
-  THSSBBS
-  user: {{ user }}
-  <button v-if='user !== null' @click='logOut'>Log Out</button>
+  <div class='ui top fixed borderless menu'>
+    <router-link class='item' to='/'>
+      THSSBBS
+    </router-link>
+    <template v-if='user !== null'>
+      <router-link class='item' to='/posts'>
+        Posts
+      </router-link>
+      <div class='right menu'>
+        <div class='ui simple dropdown item'>
+          {{ user.nickname }}
+          <div class='menu'>
+            <button class='item'
+              @click='logOut'>Log Out</button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script>

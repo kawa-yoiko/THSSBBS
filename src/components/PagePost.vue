@@ -21,7 +21,7 @@
           @click='startEditingPost'>Edit</button>
       </h2>
       <p class='by'>by {{ postUser }} at {{ postCreatedAt }}</p>
-      <p v-html='postContent'></p>
+      <p class='post-content' v-html='postContent'></p>
     </div>
   </div>
   <div v-if='postId !== -1'>
