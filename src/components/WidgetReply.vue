@@ -1,5 +1,5 @@
 <template>
-  <div class='reply'>
+  <div class='reply' v-if='reply.visible'>
     <strong>
       <span style='color: #aaa'>^{{ reply.id }}</span>
       <span style='color: #88f' v-if='reply.parent !== 0'>
@@ -35,6 +35,10 @@
         :localUserId='localUserId'
         @editOrReplyComplete='onEditOrReplyComplete'/>
     </div>
+    <div v-if='reply.replies.length > 0 &&
+        !reply.replies[reply.replies.length - 1].visible'>
+      <button @click='expand'>More</button>
+    </div>
   </div>
 </template>
 
@@ -43,6 +47,7 @@ import { ref, onMounted } from 'vue';
 
 import WidgetComposeReply from './WidgetComposeReply.vue';
 import { request } from '../utils/api';
+import { markRepliesAsVisible } from '../utils/reply-tree.js';
 
 export default {
   name: 'WidgetReply',
@@ -91,6 +96,10 @@ export default {
       props.onEditOrReplyComplete.call();
     };
 
+    const expand = () => {
+      markRepliesAsVisible(props.reply.replies, 8, [6, 4, 2]);
+    };
+
     return {
       replyContent,
       editingReply,
@@ -102,6 +111,8 @@ export default {
       composingReply,
       startComposingReply,
       doneComposingReply,
+
+      expand,
     };
   }
 };
@@ -111,5 +122,6 @@ export default {
 .reply {
   padding-left: 15px;
   border-left: #ddd solid 2px;
+  margin-bottom: 12px;
 }
 </style>

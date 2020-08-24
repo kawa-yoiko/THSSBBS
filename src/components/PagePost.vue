@@ -26,6 +26,10 @@
   </div>
   <div v-if='postId !== -1'>
     <hr>
+    <div class='post'>
+      <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
+    </div>
+    <br>
     {{ postReplies.length }} reply/replies
     <div class='replies'>
       <div class='post' v-for='reply in postReplies' :key='reply.id'>
@@ -35,21 +39,25 @@
           @editOrReplyComplete='refreshPost'/>
       </div>
     </div>
-    <br>
-    <div class='post'>
-      <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
+    <div id='thread-more'
+      v-if='postReplies.length >= 0 &&
+        !postReplies[postReplies.length - 1].visible'>
+      Scroll down to load more!
     </div>
   </div>
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import WidgetReply from './WidgetReply.vue';
 import WidgetComposeReply from './WidgetComposeReply.vue';
 import { request, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
+import {
+  markRepliesAsVisible, saveVisibleReplies, restoreVisibleReplies
+} from '../utils/reply-tree.js';
 
 export default {
   name: 'PagePost',
@@ -66,9 +74,14 @@ export default {
     const postCreatedAt = ref(null);
     const postUpdatedAt = ref(null);
     const postContent = ref('');
-    const postReplies = ref([]);
+    const postReplies = ref(null);
 
     const refreshPost = async () => {
+      // For saving the list of visible replies on refresh
+      const visibleReplies =
+        postReplies.value === null ? null :
+        saveVisibleReplies(postReplies.value);
+
       const [status, body] = await request('GET', '/post/' + postId.value);
       if (status >= 200 && status < 299) {
         postUser.id = body.userId;
@@ -89,19 +102,46 @@ export default {
           createdAt: new Date(reply.created),
           updatedAt: new Date(reply.updated),
           replies: [],
+          visible: false,
         }));
         // Sorted list of replies, as a tree in brackets representation
         const sortedList = [];
         // Lookup table from reply ID to node's child list
         const lookup = { 0: sortedList };
+        // Build the tree
         list.forEach((reply) => {
           const parent = lookup[reply.parent];
           parent.push(reply);
           lookup[reply.id] = reply.replies;
         });
+        // Show replies
+        if (visibleReplies === null) {
+          //markRepliesAsVisible(sortedList, 10, [8, 6, 4, 2]);
+          markRepliesAsVisible(sortedList, 6, [1, 1]);
+        } else {
+          restoreVisibleReplies(sortedList, visibleReplies);
+        }
         postReplies.value = sortedList;
       }
     };
+
+    // No need to debounce since the callback is lightweight enough
+    const scrollHandler = () => {
+      const body = document.body;
+      const html = document.documentElement;
+      const pageSize = Math.max(
+        body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight);
+      if (pageSize - (window.scrollY + window.innerHeight) <= 40) {
+        if (postReplies.value !== null)
+          markRepliesAsVisible(postReplies.value, 6, [4, 2]);
+      }
+    };
+    window.addEventListener('scroll', scrollHandler);
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', scrollHandler);
+    });
 
     if (postId.value !== -1) await refreshPost();
 
@@ -190,5 +230,8 @@ input, textarea {
 }
 .edit-post-content {
   width: 100%;
+}
+#thread-more {
+  margin-bottom: 100px;
 }
 </style>
