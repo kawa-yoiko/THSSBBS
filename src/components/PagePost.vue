@@ -27,7 +27,7 @@
   <div v-if='postId !== -1'>
     <hr>
     <div class='post'>
-      <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost' />
+      <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost(0)' />
     </div>
     <br>
     {{ postReplies.length }} reply/replies
@@ -40,7 +40,7 @@
       </div>
     </div>
     <div id='thread-more'
-      v-if='postReplies.length >= 0 &&
+      v-if='postReplies.length > 0 &&
         !postReplies[postReplies.length - 1].visible'>
       Scroll down to load more!
     </div>
@@ -76,7 +76,10 @@ export default {
     const postContent = ref('');
     const postReplies = ref(null);
 
-    const refreshPost = async () => {
+    // `parentToUpdate` is the parent reply of the newly created reply
+    // or 0 if a new top-level reply has been created
+    // or undefined if the event is an update
+    const refreshPost = async (parentToUpdate) => {
       // For saving the list of visible replies on refresh
       const visibleReplies =
         postReplies.value === null ? null :
@@ -120,6 +123,12 @@ export default {
           markRepliesAsVisible(sortedList, 6, [1, 1]);
         } else {
           restoreVisibleReplies(sortedList, visibleReplies);
+        }
+        // Highlight the parent and show the last reply
+        // Note that `lookup[0]` automatically gives `sortedList`
+        if (parentToUpdate !== undefined) {
+          const replyListToHighlight = lookup[parentToUpdate];
+          markRepliesAsVisible(replyListToHighlight, 999999, []);
         }
         postReplies.value = sortedList;
       }

@@ -42,6 +42,7 @@ export default {
       const params = {
         page: curPage.value,
         size: 100,
+        orderByReply: true,
       };
       if (filterUser.value !== null) {
         params.userId = filterUser.value.id;

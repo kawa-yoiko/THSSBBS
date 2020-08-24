@@ -78,7 +78,7 @@ export default {
 
       if (status >= 200 && status < 299) {
         replyContent.value = editingReplyContent.value;
-        props.onEditOrReplyComplete.call();
+        props.onEditOrReplyComplete.call(undefined, undefined);
       }
 
       sendEditReplyInProgress.value = false;
@@ -93,7 +93,7 @@ export default {
 
     const doneComposingReply = () => {
       composingReply.value = false;
-      props.onEditOrReplyComplete.call();
+      props.onEditOrReplyComplete.call(undefined, props.reply.id);
     };
 
     const expand = () => {

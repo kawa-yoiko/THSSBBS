@@ -8,11 +8,10 @@ const markRepliesAsVisible = (replies, limit, propagate) => {
     if (r.visible) continue;
 
     r.visible = true;
-    if ((total += 1) >= limit) break;
+    total += 1;
 
-    const newLimit = Math.min(limit - total, nextLimit);
-    if (newLimit > 0) {
-      const count = markRepliesAsVisible(r.replies, newLimit, propagate);
+    if (nextLimit > 0) {
+      const count = markRepliesAsVisible(r.replies, nextLimit, propagate);
       if ((total += count) >= limit) break;
     }
   }
