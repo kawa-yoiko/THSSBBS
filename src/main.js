@@ -13,6 +13,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: PageLanding },
+    { path: '/login', component: PageLanding },
     { path: '/posts', component: PagePosts },
     { path: '/post/:id(\\d+|create)', component: PagePost },
     { path: '/hello', component: HelloWorld },
@@ -22,7 +23,7 @@ const router = createRouter({
       await EventBus.wait('routerViewLoaded', 5000);
       return savedPosition;
     } else {
-      return { x: 0, y: 0 };
+      return { left: 0, top: 0 };
     }
   },
 })

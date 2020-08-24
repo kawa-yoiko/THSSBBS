@@ -6,7 +6,7 @@
 
 <script>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { request, getLocalJWT, setLocalJWT, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
@@ -24,8 +24,14 @@ export default {
     EventBus.on('logged-out', updateProfileDisp);
 
     // Go back to log in page on log-out
+    const route = useRoute();
     const router = useRouter();
-    EventBus.on('logged-out', () => router.push('/'));
+    EventBus.on('logged-out', () => {
+      if (route.fullPath !== '/' && route.fullPath !== '/login') {
+        const ret = route.query.return || route.fullPath;
+        router.replace({ path: '/login', query: { return: ret } });
+      }
+    });
 
     // Confirm validity of the auth token
     (async () => {
@@ -42,7 +48,7 @@ export default {
       // Network request goes at the end
       // since other updates do not need to wait for its completion
       const [status, body] = await request(
-        'PATCH', '/logout', {}, undefined, prevJWT);
+        'PATCH', '/logout', {}, prevJWT);
     };
 
     return {

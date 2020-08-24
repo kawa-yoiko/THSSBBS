@@ -12,20 +12,27 @@
 
 <script>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
-import { request, setLocalJWT } from '../utils/api';
+import { request, setLocalJWT, getLocalUser } from '../utils/api';
 import { emitNotification } from '../utils/notification';
 import EventBus from '../utils/event-bus';
 
 export default {
   name: 'PageLanding',
-  setup() {
+  async setup() {
     const inputUsername = ref('2018013379');
     const inputPassword = ref('937194');
     const logInInProgress = ref(false);
 
+    const route = useRoute();
+    const returnDest = route.query.return || '/posts';
+
     const router = useRouter();
+    if (await getLocalUser() !== null) {
+      router.replace(returnDest);
+      return;
+    }
 
     const logIn = async () => {
       logInInProgress.value = true;
@@ -34,14 +41,15 @@ export default {
           username: inputUsername.value,
           password: inputPassword.value,
         },
-        () => logInInProgress.value = false,
         null  // No authorization
       );
+
+      logInInProgress.value = false;
 
       if (status >= 200 && status < 299) {
         console.log(body);
         setLocalJWT(body.jwt);
-        router.push('/posts');
+        router.replace(returnDest);
         EventBus.emit('logged-in');
       } else if (status >= 400 && status < 499) {
         emitNotification(body);

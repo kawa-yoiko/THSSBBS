@@ -164,7 +164,8 @@ export default {
       startEditingPost,
       doneEditingPost,
 
-      localUser: await getLocalUser(),
+      // Previous requests may set local user to null
+      localUser: await getLocalUser() || {},
 
       refreshPost,
     };

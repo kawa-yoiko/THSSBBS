@@ -26,6 +26,8 @@ const setLocalJWT = (t) => {
   localUser = null;   // Invalidate user profile cache
 }
 
+import EventBus from './event-bus';
+
 // Send requests
 // Returns [status, data or message]
 // `status` is 0 for NetworkError and other non-HTTP errors
@@ -34,7 +36,7 @@ const setLocalJWT = (t) => {
 // undefined (omitted) denotes local JWT,
 // and other values are directly used as the token
 
-const request = (method, url, data, fin, auth) => new Promise((resolve, _) => {
+const request = (method, url, data, auth) => new Promise((resolve, _) => {
   const opts = {
     method,
     url,
@@ -49,12 +51,15 @@ const request = (method, url, data, fin, auth) => new Promise((resolve, _) => {
       if (err.response !== null &&
           err.response.status >= 400 &&
           err.response.status < 500) {
+        if (err.response.status === 401) {
+          setLocalJWT(null);  // Invalidated credentials
+          EventBus.emit('logged-out');
+        }
         resolve([err.response.status, err.response.data.message]);
       } else {
         resolve([0, err.message]);
       }
-    })
-    .finally(fin);
+    });
 });
 
 // Local cache for user profile
@@ -64,7 +69,7 @@ const getLocalUser = async () => {
   const jwt = getLocalJWT();
   if (jwt !== null) {
     // Try logging in
-    const [status, body] = await request('GET', '/user', {}, true);
+    const [status, body] = await request('GET', '/user', {});
     if (status >= 200 && status < 299) {
       return (localUser = {
         id: body.id,
