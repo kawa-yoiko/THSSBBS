@@ -1,34 +1,50 @@
 <template>
-  <div class='reply' v-if='reply.visible'>
+  <div class='reply-container' v-if='reply.visible'>
     <strong>
       <span style='color: #aaa'>^{{ reply.id }}</span>
       <span style='color: #88f' v-if='reply.parent !== 0'>
         → ^{{ reply.parent }}
       </span>
-      by {{ reply.user }} at {{ reply.createdAt }}
+      by {{ reply.user.nickname }} at {{ reply.createdAt }}
     </strong>
-    <button @click='startComposingReply'>Reply</button>
-    <button v-if='reply.user.id === localUserId'
-        @click='startEditingReply(reply)'>
-      Edit
+    <button @click='startComposingReply'
+        class='ui compact mini basic icon button'
+        data-tooltip='Reply'>
+      <i class='reply icon'></i>
     </button>
-    <div v-if='editingReply'>
-      editing
-      <textarea v-model='editingReplyContent' />
-      <br>
-      <div v-if='sendEditReplyInProgress'>
-        sending
+    <button v-if='reply.user.id === localUserId'
+        @click='startEditingReply(reply)'
+        class='ui compact mini basic icon button'
+        data-tooltip='Edit'>
+      <i class='edit icon'></i>
+    </button>
+    <div v-if='editingReply' style='margin: 1ex 0'>
+      <div class='ui form' style='margin: 1ex 0'>
+        <textarea rows='7' v-model='editingReplyContent' />
       </div>
-      <div v-else>
-        <button @click='doneEditingReply'>Done</button>
-        <button @click='editingReply = false'>Cancel</button>
+      <div>
+        <button @click='doneEditingReply'
+          :class='"ui basic small green button" +
+            (sendEditReplyInProgress ? " loading disabled" : "")'>
+          <i class='ui check icon'></i>
+          Save
+        </button>
+        <button @click='editingReply = false'
+          v-if='!sendEditReplyInProgress'
+          class='ui basic small button'
+        >
+          <i class='ui x icon'></i>
+          Cancel
+        </button>
       </div>
     </div>
     <p v-else v-html='replyContent'></p>
-    <widget-compose-reply v-if='composingReply'
-      :post-id='postId' :parent-id='reply.id'
-      @sent='doneComposingReply'
-      @cancel='composingReply = false' />
+    <div v-if='composingReply' class='reply-container'>
+      <widget-compose-reply
+        :post-id='postId' :parent-id='reply.id'
+        @sent='doneComposingReply'
+        @cancel='composingReply = false' />
+    </div>
     <div v-for='subreply in reply.replies' :key='subreply.id'>
       <widget-reply :level='level + 1'
         :postId='postId' :reply='subreply'
@@ -37,7 +53,7 @@
     </div>
     <div v-if='reply.replies.length > 0 &&
         !reply.replies[reply.replies.length - 1].visible'>
-      <button @click='expand'>More</button>
+      <button @click='expand' class='ui basic mini button'>Continue this thread</button>
     </div>
   </div>
 </template>
@@ -119,7 +135,7 @@ export default {
 </script>
 
 <style scoped>
-.reply {
+.reply-container {
   padding-left: 15px;
   border-left: #ddd solid 2px;
   margin-bottom: 12px;

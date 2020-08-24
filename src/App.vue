@@ -38,14 +38,17 @@ body {
   font-size: 18px;
   color: #333;
   background: #fefbfa;
-  margin-top: 60px;
-  margin-bottom: 60px;
+  margin-top: 30px;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
+#main {
+  margin-bottom: 60px;
+}
+
+:not(span):not(i) {
   font-family: 'Open Sans', sans-serif !important;
   font-size: 18px;
   letter-spacing: 0.5px;

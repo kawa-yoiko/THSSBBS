@@ -1,36 +1,60 @@
 <template>
-  <p>Single post page</p>
-  <div class='post'>
-    <div v-if='editingPost'>
-      <input class='edit-post-title'
+  <div class='ui card post-content-card'>
+    <div v-if='editingPost' class='ui form' style='margin: 1ex 0'>
+      <input class='edit-post-title' style='margin-bottom: 1ex'
         v-model='editingPostTitle' placeholder='Title' />
-      <textarea class='edit-post-content' rows='10'
+      <textarea class='edit-post-content' style='margin-bottom: 1ex' rows='10'
         v-model='editingPostContent' placeholder='Content' />
-      <div v-if='sendEditPostInProgress'>
-        sending
-      </div>
-      <div v-else>
-        <button @click='doneEditingPost'>Done</button>
-        <button v-if='postId !== -1' @click='editingPost = false'>Cancel</button>
+      <div>
+        <div v-if='postId === -1'>
+          <button @click='doneEditingPost'
+            :class='"ui basic small orange button" +
+              (sendEditPostInProgress ? " loading" : "")'>
+            <i class='ui paper plane icon'></i>
+            Post
+          </button>
+        </div>
+        <div v-else>
+          <button @click='doneEditingPost'
+            :class='"ui basic small green button" +
+              (sendEditPostInProgress ? " loading disabled" : "")'>
+            <i class='ui check icon'></i>
+            Done
+          </button>
+          <button @click='editingPost = false'
+            v-if='!sendEditPostInProgress'
+            class='ui basic small button'
+          >
+            <i class='ui x icon'></i>
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
     <div v-else>
-      <h2>
-        <span style='color: #aaa'>#{{ postId }}</span> {{ postTitle }}
+      <p style='font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5ex'>
+        {{ postTitle }}
+        <span style='color: #aaa; margin-left: 0.5em'>#{{ postId }}</span>
+      </p>
+      <p style='color: #aaa'>
+        by {{ postUser.nickname }} at {{ postCreatedAt }}
         <button v-if='postUser.id === localUser.id'
-          @click='startEditingPost'>Edit</button>
-      </h2>
-      <p class='by'>by {{ postUser }} at {{ postCreatedAt }}</p>
+            @click='startEditingPost'
+            class='ui basic right floated small button'
+            style='position: relative; top: -4px'>
+          <i class='pencil alternate icon'></i>
+          Edit
+        </button>
+      </p>
+      <hr style='background: #aaa; border: none; height: 1px'>
       <p class='post-content' v-html='postContent'></p>
     </div>
   </div>
   <div v-if='postId !== -1'>
-    <hr>
     <div class='post'>
       <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost(0)' />
     </div>
-    <br>
-    {{ postReplies.length }} reply/replies
+    <p>{{ postReplies.length }} reply/replies</p>
     <div class='replies'>
       <div class='post' v-for='reply in postReplies' :key='reply.id'>
         <widget-reply :level='0'
@@ -223,16 +247,14 @@ export default {
 </script>
 
 <style scoped>
-.post {
-  text-align: left;
-  margin: 0 200px;
+.post-content-card {
+  background: none;
+  width: 100%;
+  padding: 1ex 1em;
+  overflow: hidden;
 }
-.by {
-  color: #aaa;
-  margin: -2ex 0 2ex 0;
-}
-input, textarea {
-  font: inherit;
+.post-content {
+  margin: 1.5ex 0 1ex 0;
 }
 .edit-post-title {
   width: 100%;

@@ -1,16 +1,24 @@
 <template>
   <div class='container'>
-    <h3>
-      Reply → {{ parentId !== 0 ? '^' + parentId : '#' + postId }}
-    </h3>
-    <textarea rows='7' cols='50' v-model='replyContents' />
-    <br>
-    <div v-if='sendReplyInProgress'>
-      sending
+    <div class='ui form' style='margin-bottom: 1ex'>
+      <textarea rows='7' v-model='replyContents'
+        :placeholder='"Reply to " + (parentId !== 0 ? "^" + parentId : "#" + postId)'
+        />
     </div>
-    <div v-else>
-      <button @click='sendReply'>Post</button>
-      <button @click='onCancel' v-if='parentId !== 0'>Cancel</button>
+    <div>
+      <button @click='sendReply'
+        :class='"ui basic small orange button" +
+          (sendReplyInProgress ? " loading disabled" : "")'>
+        <i class='ui paper plane icon'></i>
+        Post
+      </button>
+      <button @click='onCancel'
+        v-if='parentId !== 0 && !sendReplyInProgress'
+        class='ui basic small button'
+      >
+        <i class='ui x icon'></i>
+        Cancel
+      </button>
     </div>
   </div>
 </template>
@@ -63,10 +71,6 @@ export default {
 
 <style scoped>
 .container {
-  text-align: left;
   margin-bottom: 12px;
-}
-textarea {
-  font-family: inherit;
 }
 </style>

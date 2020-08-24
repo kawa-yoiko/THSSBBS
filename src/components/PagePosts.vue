@@ -1,18 +1,18 @@
 <template>
   <router-link to='/post/create'
-      class='ui labeled icon orange large button' style='width: 100%'>
-    <i class='cloud icon'></i>
+      class='ui labeled icon orange large fluid button'>
+    <i class='plus icon'></i>
     Create post
   </router-link>
   <div v-for='post in posts' :key='post.id'
       class='ui card post-content-card'>
     <router-link :to='"/post/" + post.id' style='color: unset'>
     <div style=''>
-      <p style='margin-bottom: 0.75ex'><strong>
-        <span style='color: #aaa; margin-right: 0.5em'>#{{ post.id }}</span>
+      <p style='margin-bottom: 0.75ex; font-weight: bold'>
         <span v-if='post.title'>{{ post.title }}</span>
         <span v-else  style='color: #aaa'>(Untitled)</span>
-      </strong></p>
+        <span style='color: #aaa; margin-left: 0.5em'>#{{ post.id }}</span>
+      </p>
       <div class='post-content-preview'>
         {{ post.content.substr(0, 2000) }}
       </div>
