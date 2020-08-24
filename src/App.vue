@@ -37,7 +37,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
   color: #333;
-  background: #fefbfa;
+  background: #fffdfd;
   margin-top: 30px;
 
   -webkit-font-smoothing: antialiased;
@@ -57,5 +57,10 @@ body {
 
 i.icon {
   font-family: Icons !important;
+}
+
+.ui.form textarea:focus,
+.ui.form input:focus {
+  border-color: #f2711c !important;
 }
 </style>

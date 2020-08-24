@@ -95,7 +95,6 @@ export default {
   padding-bottom: 0.75ex;
   max-height: 210px;
   overflow: hidden;
-  /*box-shadow: inset 0 -2ex 1ex -1ex #fefbfa;*/
 }
 .post-content-preview-shadow {
   width: 100%;
@@ -103,20 +102,20 @@ export default {
   position: relative;
   top: -1ex;
   margin-bottom: -1ex;
-  background: linear-gradient(transparent, #fffdfc);
+  background: linear-gradient(transparent, #fffefd);
   transition: background ease-out 0.1s;
 }
 
 .post-content-card {
-  background: #fffdfc;
+  background: #fffefd;
   width: 100%;
   padding: 1ex 1em;
   transition: background ease-out 0.1s;
 }
 .post-content-card:hover {
-  background: #fffffe;
+  background: #ffffff;
 }
 .post-content-card:hover .post-content-preview-shadow {
-  background: linear-gradient(transparent, #fffffe);
+  background: linear-gradient(transparent, #ffffff);
 }
 </style>
