@@ -58,7 +58,7 @@
             style='position: relative; top: -4px'>
           <i class='pencil alternate icon'></i>Edit
         </button>
-        <button @click='savePost(postId); postSaved = !postSaved'
+        <button @click='saveCurrentPost'
             :class='"ui basic right floated small icon button" +
               (postSaved ? " orange" : "")'
             style='position: relative; top: -4px'>
@@ -256,6 +256,11 @@ export default {
     };
 
     const postSaved = ref(isPostSaved(postId.value));
+    const saveCurrentPost = () => {
+      savePost(postId.value);
+      postSaved.value = !postSaved.value;
+      EventBus.emit('savedPostsChanged');
+    };
 
     return {
       postId,
@@ -282,7 +287,7 @@ export default {
 
       parseContent,
 
-      savePost,
+      saveCurrentPost,
       postSaved,
     };
   }

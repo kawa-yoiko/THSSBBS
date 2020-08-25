@@ -10,8 +10,8 @@
         <i class='ui sync alternate icon'></i>
       </button>
       <span style='margin-left: 0.5em;
-          position: absolute; bottom: 2ex;
-          font-size: 1.2rem; font-weight: bold'>
+          position: absolute; bottom: 1.8ex;
+          font-size: 1.28571429rem; font-weight: bold'>
         最近帖子</span>
     </div>
     <div class='ten wide column'>
