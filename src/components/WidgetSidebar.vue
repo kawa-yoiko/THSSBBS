@@ -20,7 +20,7 @@
 <script>
 import { ref } from 'vue';
 
-import { request } from '../utils/api';
+import { getPostTitleCached } from '../utils/api';
 import { getSavedPosts, getHistoryPosts } from '../utils/local-history';
 import EventBus from '../utils/event-bus';
 
@@ -33,9 +33,10 @@ export default {
     const fetchPostList = async (ids) => {
       const posts = new Array(ids.length);
       const promises = ids.map((id, index) => (async () => {
-        const [status, body] = await request('GET', `/post/${id}`);
-        if (status >= 200 && status < 299)
-          posts[index] = body;
+        posts[index] = {
+          id,
+          title: await getPostTitleCached(id)
+        };
       })());
       await Promise.all(promises);
       return posts;

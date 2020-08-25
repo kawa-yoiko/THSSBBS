@@ -106,7 +106,7 @@ import WidgetComposeReply from './WidgetComposeReply.vue';
 import WidgetUserBadge from './WidgetUserBadge';
 import WidgetTime from './WidgetTime';
 import WidgetEditor from './WidgetEditor';
-import { request, getLocalUser } from '../utils/api';
+import { request, getLocalUser, putPostTitleCached } from '../utils/api';
 import EventBus from '../utils/event-bus';
 import {
   markRepliesAsVisible, saveVisibleReplies, restoreVisibleReplies
@@ -158,6 +158,8 @@ export default {
         postCreatedAt.value = new Date(body.created);
         postUpdatedAt.value = new Date(body.updated);
         postContent.value = body.content;
+        // Put into the title cache
+        putPostTitleCached(postId.value, postTitle.value);
         // List of replies
         const list = body.reply.map((reply) => ({
           id: reply.id,

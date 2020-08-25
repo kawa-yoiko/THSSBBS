@@ -85,6 +85,23 @@ const getLocalUser = async () => {
   return null;
 }
 
+// Local cache for post titles
+
+const postTitleCache = {};
+
+const putPostTitleCached = (id, title) => postTitleCache[id] = title;
+const getPostTitleCached = async (id) => {
+  const c = postTitleCache[id];
+  if (c !== undefined) return c;
+  const [status, body] = await request('GET', `/post/${id}`);
+  if (status >= 200 && status < 299) {
+    postTitleCache[id] = body.title;
+    return body.title;
+  } else {
+    return '';
+  }
+};
+
 // Export
 
 export {
@@ -93,4 +110,7 @@ export {
   getLocalJWT,
   setLocalJWT,
   getLocalUser,
+
+  putPostTitleCached,
+  getPostTitleCached,
 };
