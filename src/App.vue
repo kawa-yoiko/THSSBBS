@@ -53,7 +53,7 @@ body {
   letter-spacing: 0.5px;
   line-height: 1.5;
 }
-:not(span):not(i):not(.mini) {
+:not(span):not(i):not(.mini):not(h1):not(h2):not(h3):not(h4) {
   font-size: 18px;
 }
 

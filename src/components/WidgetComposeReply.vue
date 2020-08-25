@@ -1,23 +1,32 @@
 <template>
   <div class='container'>
     <div class='ui form' style='margin-bottom: 1ex'>
-      <textarea rows='7' v-model='replyContents'
-        :placeholder='"Reply to " + (parentId !== 0 ? "^" + parentId : "#" + postId)'
-        />
+      <widget-editor :preview='previewing ? replyContents : null'>
+        <textarea style='line-height: 1.5' rows='7' v-model='replyContents'
+          :placeholder='"Reply to " + (parentId !== 0 ? "^" + parentId : "#" + postId)'
+          />
+      </widget-editor>
     </div>
     <div>
       <button @click='sendReply'
         :class='"ui basic small orange button" +
           (sendReplyInProgress ? " loading disabled" : "")'>
-        <i class='ui paper plane icon'></i>
-        Post
+        <i class='ui paper plane icon'></i>Post
+      </button>
+      <button @click='previewing = !previewing'
+          v-if='!sendReplyInProgress'
+          class='ui basic small blue button'>
+        <template v-if='previewing'>
+          <i class='ui edit icon'></i>Write
+        </template>
+        <template v-else>
+          <i class='ui file alternate outline icon'></i>Preview
+        </template>
       </button>
       <button @click='onCancel'
-        v-if='parentId !== 0 && !sendReplyInProgress'
-        class='ui basic small button'
-      >
-        <i class='ui x icon'></i>
-        Cancel
+          v-if='parentId !== 0 && !sendReplyInProgress'
+          class='ui basic small button'>
+        <i class='ui x icon'></i>Cancel
       </button>
     </div>
   </div>
@@ -26,6 +35,7 @@
 <script>
 import { ref } from 'vue';
 
+import WidgetEditor from './WidgetEditor';
 import { request } from '../utils/api';
 
 export default {
@@ -33,8 +43,10 @@ export default {
   props: [
     'postId', 'parentId', 'onSent', 'onCancel',
   ],
+  components: { WidgetEditor },
   setup(props) {
     const replyContents = ref('');
+    const previewing = ref(false);
     const sendReplyInProgress = ref(false);
 
     const sendReply = async () => {
@@ -61,6 +73,7 @@ export default {
 
     return {
       replyContents,
+      previewing,
       sendReplyInProgress,
 
       sendReply,

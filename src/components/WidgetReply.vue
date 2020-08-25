@@ -26,21 +26,30 @@
     </button>
     <div v-if='editingReply' style='margin: 1ex 0'>
       <div class='ui form' style='margin: 1ex 0'>
-        <textarea rows='7' v-model='editingReplyContent' />
+        <widget-editor :preview='previewing ? editingReplyContent : null'>
+          <textarea rows='7' v-model='editingReplyContent' />
+        </widget-editor>
       </div>
       <div>
         <button @click='doneEditingReply'
           :class='"ui basic small green button" +
             (sendEditReplyInProgress ? " loading disabled" : "")'>
-          <i class='ui check icon'></i>
-          Save
+          <i class='ui check icon'></i>Save
+        </button>
+        <button @click='previewing = !previewing'
+            v-if='!sendEditReplyInProgress'
+            class='ui basic small blue button'>
+          <template v-if='previewing'>
+            <i class='ui edit icon'></i>Write
+          </template>
+          <template v-else>
+            <i class='ui file alternate outline icon'></i>Preview
+          </template>
         </button>
         <button @click='editingReply = false'
-          v-if='!sendEditReplyInProgress'
-          class='ui basic small button'
-        >
-          <i class='ui x icon'></i>
-          Cancel
+            v-if='!sendEditReplyInProgress'
+            class='ui basic small button'>
+          <i class='ui x icon'></i>Cancel
         </button>
       </div>
     </div>
@@ -70,6 +79,7 @@ import { ref, onMounted } from 'vue';
 import WidgetComposeReply from './WidgetComposeReply.vue';
 import WidgetUserBadge from './WidgetUserBadge';
 import WidgetTime from './WidgetTime';
+import WidgetEditor from './WidgetEditor';
 import { request } from '../utils/api';
 import { markRepliesAsVisible } from '../utils/reply-tree.js';
 
@@ -79,6 +89,7 @@ export default {
     WidgetComposeReply,
     WidgetUserBadge,
     WidgetTime,
+    WidgetEditor,
   },
   props: [
     'level', 'postId', 'reply', 'localUserId',
@@ -89,6 +100,7 @@ export default {
 
     const editingReply = ref(false);
     const editingReplyContent = ref('');
+    const previewing = ref(false);
     const sendEditReplyInProgress = ref(false);
 
     const startEditingReply = (reply) => {
@@ -132,6 +144,7 @@ export default {
       replyContent,
       editingReply,
       editingReplyContent,
+      previewing,
       sendEditReplyInProgress,
       startEditingReply,
       doneEditingReply,

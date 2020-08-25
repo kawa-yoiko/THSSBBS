@@ -3,8 +3,11 @@
     <div v-if='editingPost' class='ui form' style='margin: 1ex 0'>
       <input class='edit-post-title' style='margin-bottom: 1ex'
         v-model='editingPostTitle' placeholder='Title' />
-      <textarea class='edit-post-content' style='margin-bottom: 1ex' rows='10'
-        v-model='editingPostContent' placeholder='Content' />
+      <widget-editor :preview='previewing ? editingPostContent : null'>
+        <textarea class='edit-post-content'
+          style='margin-bottom: 1ex; line-height: 1.5' rows='15'
+          v-model='editingPostContent' placeholder='Content' />
+      </widget-editor>
       <div>
         <div v-if='postId === -1'>
           <button @click='doneEditingPost'
@@ -18,15 +21,22 @@
           <button @click='doneEditingPost'
             :class='"ui basic small green button" +
               (sendEditPostInProgress ? " loading disabled" : "")'>
-            <i class='ui check icon'></i>
-            Done
+            <i class='ui check icon'></i>Done
+          </button>
+          <button @click='previewing = !previewing'
+              v-if='!sendEditPostInProgress'
+              class='ui basic small blue button'>
+            <template v-if='previewing'>
+              <i class='ui edit icon'></i>Write
+            </template>
+            <template v-else>
+              <i class='ui file alternate outline icon'></i>Preview
+            </template>
           </button>
           <button @click='editingPost = false'
-            v-if='!sendEditPostInProgress'
-            class='ui basic small button'
-          >
-            <i class='ui x icon'></i>
-            Cancel
+              v-if='!sendEditPostInProgress'
+              class='ui basic small button'>
+            <i class='ui x icon'></i>Cancel
           </button>
         </div>
       </div>
@@ -84,6 +94,7 @@ import WidgetReply from './WidgetReply.vue';
 import WidgetComposeReply from './WidgetComposeReply.vue';
 import WidgetUserBadge from './WidgetUserBadge';
 import WidgetTime from './WidgetTime';
+import WidgetEditor from './WidgetEditor';
 import { request, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
 import {
@@ -98,6 +109,7 @@ export default {
     WidgetComposeReply,
     WidgetUserBadge,
     WidgetTime,
+    WidgetEditor,
   },
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
@@ -196,12 +208,14 @@ export default {
     const editingPost = ref(postId.value === -1);
     const editingPostTitle = ref('');
     const editingPostContent = ref('');
+    const previewing = ref(false);
     const sendEditPostInProgress = ref(false);
 
     const startEditingPost = () => {
       editingPost.value = true;
       editingPostTitle.value = postTitle.value;
       editingPostContent.value = postContent.value;
+      previewing.value = false;
     };
     const doneEditingPost = async () => {
       sendEditPostInProgress.value = true;
@@ -249,6 +263,7 @@ export default {
       editingPost,
       editingPostTitle,
       editingPostContent,
+      previewing,
       sendEditPostInProgress,
       startEditingPost,
       doneEditingPost,
