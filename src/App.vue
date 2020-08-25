@@ -61,6 +61,7 @@ i.icon {
   font-family: Icons !important;
 }
 
+.ui.input input:focus,
 .ui.form textarea:focus,
 .ui.form input:focus {
   border-color: #f2711c !important;
