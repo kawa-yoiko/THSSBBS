@@ -33,6 +33,8 @@
       </div>
     </div>
   </div>
+  <widget-pagination
+    :total='Math.ceil(postCount / pageSize)' :current='curPage' @change='setPage' />
   <div v-if='postsLoading' style='margin-top: 3ex'>
     <div class='ui active centered inline loader'></div>
   </div>
@@ -71,6 +73,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import WidgetUserBadge from './WidgetUserBadge';
 import WidgetTime from './WidgetTime';
+import WidgetPagination from './WidgetPagination';
 import { request } from '../utils/api';
 import EventBus from '../utils/event-bus';
 
@@ -79,6 +82,7 @@ export default {
   components: {
     WidgetUserBadge,
     WidgetTime,
+    WidgetPagination,
   },
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
@@ -89,6 +93,8 @@ export default {
     const postsLoading = ref(true);
     const postCount = ref(0);
     const curPage = ref(1);
+    const pageSize = 10;
+
     const posts = ref([]);
     const filterUser = ref(null);
 
@@ -116,7 +122,7 @@ export default {
 
       const params = {
         page: curPage.value,
-        size: 10,
+        size: pageSize,
         orderByReply: (orderBy.value === 0),
       };
       if (filterUser.value !== null) {
@@ -146,30 +152,54 @@ export default {
       postsLoading.value = false;
     };
 
-    const setOrderBy = async (s, refreshAndKeepRoute) => {
-      if (refreshAndKeepRoute || orderBy.value !== s) {
+    const setOrderBy = async (s, keepRoute) => {
+      if (keepRoute || orderBy.value !== s) {
         orderBy.value = s;
-        await updatePosts();
-        if (!refreshAndKeepRoute) {
+        if (!keepRoute) {
+          const query = Object.assign({}, route.query);
+          if (s === 0) delete query.order;
+          else query.order = s;
           router.replace({
             path: route.fullPath,
-            query: s === 0 ? null : { order: s }
+            query,
           });
+          await updatePosts();
         }
       }
     };
 
-    watch(route, async (oldRoute, newRoute) => {
-      if (Number(newRoute.params.uid) !== (filterUser.value || {}).id
-          || Number(newRoute.query.order || 0) !== orderBy.value) {
-        await updateFilterUser(newRoute);
-        await setOrderBy(Number(newRoute.query.order || 0), true);
+    const setPage = async (p, keepRoute) => {
+      if (keepRoute || curPage.value !== p) {
+        curPage.value = p;
+        if (!keepRoute) {
+          const query = Object.assign({}, route.query);
+          query.page = p;
+          router.replace({
+            path: route.fullPath,
+            query,
+          });
+          await updatePosts();
+        }
+      }
+    };
+
+    // TODO: Fix /posts/by/:uid
+    watch(route.query, async (_n, _o) => {
+      if (Number(route.params.uid || -1) !== (filterUser.value || { id: -1 }).id
+          || Number(route.query.order || 0) !== orderBy.value
+          || Number(route.query.page || 1) !== curPage.value) {
+        await updateFilterUser(route);
+        await setOrderBy(Number(route.query.order || 0), true);
+        await setPage(Number(route.query.page || 1), true);
+        await updatePosts();
         EventBus.emit('routerViewLoaded');
       }
     });
 
     await updateFilterUser(route);
-    await setOrderBy(route.query.order || 0, true);
+    await setOrderBy(Number(route.query.order || 0), true);
+    await setPage(Number(route.query.page || 1), true);
+    await updatePosts();
 
     return {
       postsLoading,
@@ -181,6 +211,9 @@ export default {
       orderBy,
       orderByDescription,
       setOrderBy,
+
+      pageSize,
+      setPage,
 
       updatePosts,
     };

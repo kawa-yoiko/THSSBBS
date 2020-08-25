@@ -48,11 +48,13 @@ body {
   margin-bottom: 60px;
 }
 
-:not(span):not(i):not(.mini) {
+:not(span):not(i) {
   font-family: 'Open Sans', sans-serif !important;
-  font-size: 18px;
   letter-spacing: 0.5px;
   line-height: 1.5;
+}
+:not(span):not(i):not(.mini) {
+  font-size: 18px;
 }
 
 i.icon {

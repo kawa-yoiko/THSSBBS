@@ -48,7 +48,7 @@ const request = (method, url, data, auth) => new Promise((resolve, _) => {
   ax(opts)
     .then((resp) => resolve([resp.status, resp.data]))
     .catch((err) => {
-      if (err.response !== null &&
+      if (err.response &&
           err.response.status >= 400 &&
           err.response.status < 500) {
         if (err.response.status === 401) {
