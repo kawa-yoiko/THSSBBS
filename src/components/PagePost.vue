@@ -85,6 +85,7 @@
         <widget-reply :level='0'
           :postId='postId' :reply='reply'
           :localUserId='localUser.id'
+          @foldOrUnfold='reply.folded = !reply.folded'
           @editOrReplyComplete='refreshPost'/>
       </div>
     </div>
@@ -173,6 +174,7 @@ export default {
           updatedAt: new Date(reply.updated),
           replies: [],
           visible: false,
+          folded: false,
         }));
         postRepliesCount.value = list.length;
         // Sorted list of replies, as a tree in brackets representation

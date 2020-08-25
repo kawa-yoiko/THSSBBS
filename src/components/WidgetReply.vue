@@ -18,12 +18,18 @@
         data-tooltip='Reply'>
       <i class='reply icon'></i>
     </button>
+    <button @click='onFoldOrUnfold'
+        class='ui compact mini basic icon button'
+        :data-tooltip='reply.folded ? "Unfold" : "Fold"'>
+      <i :class='(reply.folded ? "plus" : "minus") + " icon"'></i>
+    </button>
     <button v-if='reply.user.id === localUserId'
         @click='startEditingReply(reply)'
         class='ui compact mini basic icon button'
         data-tooltip='Edit'>
       <i class='edit icon'></i>
     </button>
+  <template v-if='!reply.folded'>
     <div v-if='editingReply' style='margin: 1ex 0'>
       <div class='ui form' style='margin: 1ex 0'>
         <widget-editor :preview='previewing ? editingReplyContent : null'>
@@ -64,12 +70,14 @@
       <widget-reply :level='level + 1'
         :postId='postId' :reply='subreply'
         :localUserId='localUserId'
+          @foldOrUnfold='subreply.folded = !subreply.folded'
         @editOrReplyComplete='onEditOrReplyComplete'/>
     </div>
     <div v-if='reply.replies.length > 0 &&
-        !reply.replies[reply.replies.length - 1].visible'>
+        !reply.replies.every((x) => x.visible)'>
       <button @click='expand' class='ui basic mini button'>Continue this thread</button>
     </div>
+  </template>
   </div>
 </template>
 
@@ -93,7 +101,7 @@ export default {
   },
   props: [
     'level', 'postId', 'reply', 'localUserId',
-    'onEditOrReplyComplete'
+    'onEditOrReplyComplete', 'onFoldOrUnfold'
   ],
   setup(props) {
     const replyContent = ref(props.reply.content);
