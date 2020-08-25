@@ -13,8 +13,7 @@
           <button @click='doneEditingPost'
             :class='"ui basic small orange button" +
               (sendEditPostInProgress ? " loading" : "")'>
-            <i class='ui paper plane icon'></i>
-            Post
+            <i class='ui paper plane icon'></i>Post
           </button>
         </div>
         <div v-else>
@@ -57,8 +56,13 @@
             @click='startEditingPost'
             class='ui basic right floated small button'
             style='position: relative; top: -4px'>
-          <i class='pencil alternate icon'></i>
-          Edit
+          <i class='pencil alternate icon'></i>Edit
+        </button>
+        <button @click='savePost(postId); postSaved = !postSaved'
+            :class='"ui basic right floated small icon button" +
+              (postSaved ? " orange" : "")'
+            style='position: relative; top: -4px'>
+          <i class='star outline icon'></i>
         </button>
       </p>
       <hr style='background: #aaa; border: none; height: 1px'>
@@ -101,6 +105,7 @@ import {
   markRepliesAsVisible, saveVisibleReplies, restoreVisibleReplies
 } from '../utils/reply-tree.js';
 import parseContent from '../utils/parse-content';
+import { savePost, isPostSaved } from '../utils/local-history';
 
 export default {
   name: 'PagePost',
@@ -250,6 +255,8 @@ export default {
       await refreshPost();
     };
 
+    const postSaved = ref(isPostSaved(postId.value));
+
     return {
       postId,
       postUser,
@@ -274,6 +281,9 @@ export default {
       refreshPost,
 
       parseContent,
+
+      savePost,
+      postSaved,
     };
   }
 };
