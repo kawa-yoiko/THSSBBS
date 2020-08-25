@@ -52,7 +52,7 @@
         </button>
       </p>
       <hr style='background: #aaa; border: none; height: 1px'>
-      <p class='post-content' v-html='postContent'></p>
+      <p class='post-content' v-html='parseContent(postContent)'></p>
     </div>
   </div>
   <div v-if='postId !== -1'>
@@ -89,6 +89,7 @@ import EventBus from '../utils/event-bus';
 import {
   markRepliesAsVisible, saveVisibleReplies, restoreVisibleReplies
 } from '../utils/reply-tree.js';
+import parseContent from '../utils/parse-content';
 
 export default {
   name: 'PagePost',
@@ -256,6 +257,8 @@ export default {
       localUser: await getLocalUser() || {},
 
       refreshPost,
+
+      parseContent,
     };
   }
 };

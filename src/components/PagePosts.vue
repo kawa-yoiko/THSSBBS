@@ -47,7 +47,7 @@
         <span v-else  style='color: #aaa'>(Untitled)</span>
         <span style='color: #aaa; margin-left: 0.5em'>#{{ post.id }}</span>
       </p>
-      <div class='post-content-preview' v-html='post.content'>
+      <div class='post-content-preview' v-html='parseContent(post.content)'>
       </div>
       <div class='post-content-preview-shadow'></div>
       <p style='color: #aaa'>
@@ -78,6 +78,7 @@ import WidgetTime from './WidgetTime';
 import WidgetPagination from './WidgetPagination';
 import { request } from '../utils/api';
 import EventBus from '../utils/event-bus';
+import parseContent from '../utils/parse-content';
 
 export default {
   name: 'PagePosts',
@@ -216,6 +217,7 @@ export default {
       setPage,
 
       updatePosts,
+      parseContent,
     };
   }
 }

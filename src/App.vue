@@ -66,4 +66,23 @@ i.icon {
 .ui.form input:focus {
   border-color: #f2711c !important;
 }
+
+/* Highlighting */
+@import '../node_modules/highlight.js/styles/rainbow.css';
+
+.post-content pre, .post-content code,
+.post-content-preview pre, .post-content-preview code
+{
+  font-family: 'Source Code Pro', monospace !important;
+}
+
+.post-content pre,
+.post-content-preview pre
+{
+  padding: 1ex 1em;
+  border-radius: 6px;
+  /* Match this with the theme used */
+  background: #474949;
+  color: #d1d9e1;
+}
 </style>
