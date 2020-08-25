@@ -5,7 +5,7 @@
       <span style='margin: 0 0.25em'></span>
       <widget-time :time='reply.createdAt' />
       <template v-if='reply.createdAt < reply.updatedAt'>
-        <span>（更新于 <widget-time :time='reply.updatedAt' />）</span>
+        <span>（<widget-time :time='reply.updatedAt' prefix='更新于' />）</span>
       </template>
       <strong style='margin-left: 0.5em'>
         <span>^{{ reply.id }}</span>

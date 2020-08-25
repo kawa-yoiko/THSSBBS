@@ -51,14 +51,12 @@
       <p style='color: #aaa'>
         <widget-user-badge :user='post.user' />
         <span style='margin: 0 0.25em'></span>
-        发布于
-        <widget-time :time='post.createdAt' />
+        <widget-time :time='post.createdAt' prefix='发布于' />
         <span v-if='post.lastRepliedAt > post.createdAt'>
           <br>
           <widget-user-badge :user='post.lastReplyUser' />
           <span style='margin: 0 0.25em'></span>
-          活动于
-          <widget-time :time='post.lastRepliedAt' />
+          <widget-time :time='post.lastRepliedAt' prefix='活动于' />
         </span>
       </p>
     </div>
@@ -162,9 +160,10 @@ export default {
     };
 
     watch(route, async (oldRoute, newRoute) => {
-      if (Number(newRoute.params.uid) !== (filterUser.value || {}).id) {
+      if (Number(newRoute.params.uid) !== (filterUser.value || {}).id
+          || Number(newRoute.query.order || 0) !== orderBy.value) {
         await updateFilterUser(newRoute);
-        await setOrderBy(newRoute.query.order || 0, true);
+        await setOrderBy(Number(newRoute.query.order || 0), true);
         EventBus.emit('routerViewLoaded');
       }
     });

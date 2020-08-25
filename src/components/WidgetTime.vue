@@ -12,15 +12,30 @@ import zhLocale from '../../node_modules/moment/dist/locale/zh-cn.js';
 
 export default {
   name: 'WidgetTime',
-  props: ['time'],
+  props: ['time', 'prefix'],
   setup(props) {
     const intuitive = ref('');
     const absolute = ref('');
 
+    const normalize = (s) => {
+      const charType = (c) => (c <= 32 ? 0 : (c <= 127 ? 1 : -1));
+      let t = s[0];
+      let x = charType(s.charCodeAt(0));
+      for (let i = 1; i < s.length; i++) {
+        const y = charType(s.charCodeAt(i));
+        if ((x ^ y) === -2) t += ' ';
+        t += s[i];
+        x = y;
+      }
+      return t;
+    };
+
     watchEffect(() => {
       const time = moment(props.time);
       const diff = moment().diff(time, 'hours');
-      intuitive.value = (diff <= 20 ? time.fromNow() : time.calendar());
+      const s = (props.prefix || '') +
+        (diff <= 20 ? time.fromNow() : time.calendar());
+      intuitive.value = normalize(s);
       absolute.value = time.format('L LTS');
     });
 
