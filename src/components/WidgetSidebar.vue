@@ -7,23 +7,30 @@
       <i class='ui star icon'></i>{{ post.title }}
     </router-link>
   </div>
+  <h3>浏览历史</h3>
+  <div v-for='post in historyPosts' :key='post.id'
+      class='ui card post-card'>
+    <router-link class='post-link'
+      :to='"/post/" + post.id'>
+      <i class='ui history icon'></i>{{ post.title }}
+    </router-link>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue';
 
 import { request } from '../utils/api';
-import { getSavedPosts } from '../utils/local-history';
+import { getSavedPosts, getHistoryPosts } from '../utils/local-history';
 import EventBus from '../utils/event-bus';
 
 export default {
   name: 'WidgetSidebar',
   setup() {
     const savedPosts = ref([]);
+    const historyPosts = ref([]);
 
-    const updateSavedPosts = async () => {
-      const ids = getSavedPosts();
-      ids.reverse().splice(5);
+    const fetchPostList = async (ids) => {
       const posts = new Array(ids.length);
       const promises = ids.map((id, index) => (async () => {
         const [status, body] = await request('GET', `/post/${id}`);
@@ -31,14 +38,27 @@ export default {
           posts[index] = body;
       })());
       await Promise.all(promises);
-      savedPosts.value = posts;
+      return posts;
     };
 
+    const updateSavedPosts = async () => {
+      const ids = getSavedPosts();
+      ids.reverse().splice(5);
+      savedPosts.value = await fetchPostList(ids);
+    };
     updateSavedPosts().then();
     EventBus.on('savedPostsChanged', updateSavedPosts);
 
+    const updateHistoryPosts = async () => {
+      const ids = getHistoryPosts();
+      historyPosts.value = await fetchPostList(ids);
+    };
+    updateHistoryPosts().then();
+    EventBus.on('historyPostsChanged', updateHistoryPosts);
+
     return {
       savedPosts,
+      historyPosts,
     };
   },
 };

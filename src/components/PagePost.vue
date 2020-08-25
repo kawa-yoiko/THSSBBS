@@ -1,4 +1,10 @@
 <template>
+<div v-if='refreshPostInProgress'>
+  <div style='width: 100%'>
+    <div class='ui active loader'></div>
+  </div>
+</div>
+<template v-else>
   <div class='ui card post-content-card'>
     <div v-if='editingPost' class='ui form' style='margin: 1ex 0'>
       <input class='edit-post-title' style='margin-bottom: 1ex'
@@ -89,9 +95,10 @@
     </div>
   </div>
 </template>
+</template>
 
 <script>
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import WidgetReply from './WidgetReply.vue';
@@ -105,7 +112,7 @@ import {
   markRepliesAsVisible, saveVisibleReplies, restoreVisibleReplies
 } from '../utils/reply-tree.js';
 import parseContent from '../utils/parse-content';
-import { savePost, isPostSaved } from '../utils/local-history';
+import { savePost, getSavedPosts, addHistory } from '../utils/local-history';
 
 export default {
   name: 'PagePost',
@@ -122,7 +129,7 @@ export default {
     const route = useRoute();
     const router = useRouter();
 
-    const postId = ref(route.params.id === 'create' ? -1 : route.params.id);
+    const postId = ref(-1);
     const postUser = reactive({});
     const postTitle = ref('');
     const postCreatedAt = ref(null);
@@ -131,10 +138,13 @@ export default {
     const postReplies = ref(null);
     const postRepliesCount = ref(0);
 
+    const refreshPostInProgress = ref(false);
     // `parentToUpdate` is the parent reply of the newly created reply
     // or 0 if a new top-level reply has been created
     // or undefined if the event is an update
     const refreshPost = async (parentToUpdate) => {
+      refreshPostInProgress.value = true;
+
       // For saving the list of visible replies on refresh
       const visibleReplies =
         postReplies.value === null ? null :
@@ -188,6 +198,8 @@ export default {
         }
         postReplies.value = sortedList;
       }
+
+      refreshPostInProgress.value = false;
     };
 
     // No need to debounce since the callback is lightweight enough
@@ -208,9 +220,7 @@ export default {
       window.removeEventListener('scroll', scrollHandler);
     });
 
-    if (postId.value !== -1) await refreshPost();
-
-    const editingPost = ref(postId.value === -1);
+    const editingPost = ref(false);
     const editingPostTitle = ref('');
     const editingPostContent = ref('');
     const previewing = ref(false);
@@ -255,12 +265,29 @@ export default {
       await refreshPost();
     };
 
-    const postSaved = ref(isPostSaved(postId.value));
+    const postSaved = ref(false);
     const saveCurrentPost = () => {
       savePost(postId.value);
       postSaved.value = !postSaved.value;
       EventBus.emit('savedPostsChanged');
     };
+
+    const updateWithRoute = async () => {
+      const newId = route.params.id === 'create' ? -1 : Number(route.params.id);
+      if (postId.value !== newId) {
+        postId.value = newId;
+        // XXX: The following two operations might be better
+        // merged into `refreshPost()`
+        editingPost.value = (postId.value === -1);
+        postSaved.value = getSavedPosts().indexOf(newId) !== -1;
+        await refreshPost();
+        // Add to history
+        addHistory(newId);
+        EventBus.emit('historyPostsChanged');
+      }
+    }
+    watch(route, async (_n, _o) => await updateWithRoute());
+    await updateWithRoute();
 
     return {
       postId,
@@ -283,6 +310,7 @@ export default {
       // Previous requests may set local user to null
       localUser: await getLocalUser() || {},
 
+      refreshPostInProgress,
       refreshPost,
 
       parseContent,
