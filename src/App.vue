@@ -1,18 +1,20 @@
 <template>
   <layout-header></layout-header>
-  <div class='ui three column grid'>
+  <div class='ui three column divided grid'>
     <div class='two wide column'></div>
-    <div id='main' class='nine wide column'>
+    <div id='main' class='nine wide column' style='min-height: 400px'>
       <Suspense>
         <template #default>
           <router-view />
         </template>
         <template #fallback>
-          loading
+          <div style='width: 100%; margin-top: 6ex'>
+            <div class='ui active loader'></div>
+          </div>
         </template>
       </Suspense>
     </div>
-    <div class='three wide column' style='background: rgba(216, 216, 216, 0.8)'></div>
+    <div class='three wide column' style='background: rgba(216, 216, 216, 0.1)'></div>
     <div class='two wide column'></div>
   </div>
 </template>
@@ -37,7 +39,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
   color: #333;
-  background: #fffdfd;
+  background: #fcfafa;
   margin-top: 30px;
 
   -webkit-font-smoothing: antialiased;

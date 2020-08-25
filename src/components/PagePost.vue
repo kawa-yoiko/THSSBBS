@@ -291,7 +291,7 @@ export default {
 
 <style scoped>
 .post-content-card {
-  background: none;
+  background: #fefcfc;
   width: 100%;
   padding: 1ex 1em;
   overflow: hidden;

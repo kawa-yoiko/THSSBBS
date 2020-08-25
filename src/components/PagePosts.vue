@@ -235,12 +235,12 @@ export default {
   position: relative;
   top: -1ex;
   margin-bottom: -1ex;
-  background: linear-gradient(transparent, #fffefd);
+  background: linear-gradient(transparent, #fdfbfb);
   transition: background ease-out 0.1s;
 }
 
 .post-content-card {
-  background: #fffefd;
+  background: #fefcfc;
   width: 100%;
   padding: 1ex 1em;
   transition: background ease-out 0.1s;

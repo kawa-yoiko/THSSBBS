@@ -1,13 +1,12 @@
 <template>
-  <div>Landing page</div>
-  <input v-model='inputUsername' placeholder='username' /><br>
-  <input v-model='inputPassword' placeholder='password' type='password' /><br>
-  <div v-if='logInInProgress'>
-    sending request
+  <h1>登录</h1>
+  <div class='ui form'>
+    <input v-model='inputUsername' placeholder='username' />
+    <input v-model='inputPassword' placeholder='password' type='password' />
   </div>
-  <div v-else>
-    <button @click='logIn'>Log In</button>
-  </div>
+  <button :class='"ui fluid orange button" +
+    (logInInProgress ? " loading disabled" : "")'
+    @click='logIn'>Log In</button>
 </template>
 
 <script>
@@ -70,4 +69,8 @@ export default {
 </script>
 
 <style scoped>
+div.ui.form input,
+button.ui.fluid.button {
+  margin: 1ex 0;
+}
 </style>
