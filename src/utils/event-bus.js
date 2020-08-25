@@ -23,7 +23,8 @@ const emit = (ev, arg) => {
 };
 
 const wait = (ev, timeout) => new Promise((resolve, _) => {
-  const handleTimeout = setTimeout(() => resolve(), timeout);
+  const handleTimeout =
+    timeout === 0 ? null : setTimeout(() => resolve(), timeout);
   on(ev, () => {
     clearTimeout(handleTimeout);
     resolve();

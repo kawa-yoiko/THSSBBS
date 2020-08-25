@@ -48,7 +48,7 @@ body {
   margin-bottom: 60px;
 }
 
-:not(span):not(i) {
+:not(span):not(i):not(.mini) {
   font-family: 'Open Sans', sans-serif !important;
   font-size: 18px;
   letter-spacing: 0.5px;

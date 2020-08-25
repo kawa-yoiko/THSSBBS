@@ -1,5 +1,5 @@
 <template>
-  <router-link :to='"/user/" + user.id'
+  <router-link :to='"/posts/by/" + user.id'
       style='color: black'>
     {{ user.nickname }}
   </router-link>

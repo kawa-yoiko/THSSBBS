@@ -4,7 +4,39 @@
     <i class='plus icon'></i>
     Create post
   </router-link>
-  <div v-for='post in posts' :key='post.id'
+  <div style='margin-top: 0' class='ui three column grid'>
+    <div class='six wide column'>
+      <button class='ui small basic icon button' @click='updatePosts'>
+        <i class='ui sync alternate icon'></i>
+      </button>
+      <span style='margin-left: 0.5em;
+          position: absolute; bottom: 2ex;
+          font-size: 1.2rem; font-weight: bold'>
+        最近帖子</span>
+    </div>
+    <div class='ten wide column'>
+      <div class='ui right floated mini compact menu'>
+        <router-link class='ui mini link item'
+            v-if='filterUser !== null'
+            to='/posts'>
+          发布者：<span style='font-weight: bold'>{{ filterUser.nickname }}</span>
+          <i class='x icon' style='margin: 0 0 0 0.35714286em'></i>
+        </router-link>
+        <div class='ui mini simple dropdown item'>
+          {{ orderByDescription[orderBy] }}
+          <i class='dropdown icon'></i>
+          <div class='menu'>
+            <div class='item' @click='setOrderBy(0)'>{{ orderByDescription[0] }}</div>
+            <div class='item' @click='setOrderBy(1)'>{{ orderByDescription[1] }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-if='postsLoading' style='margin-top: 3ex'>
+    <div class='ui active centered inline loader'></div>
+  </div>
+  <div v-else v-for='post in posts' :key='post.id'
       class='ui card post-content-card'>
     <router-link :to='"/post/" + post.id' style='color: unset'>
     <div style=''>
@@ -36,7 +68,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import WidgetUserBadge from './WidgetUserBadge';
 import WidgetTime from './WidgetTime';
@@ -52,16 +85,41 @@ export default {
   async setup() {
     onMounted(() => EventBus.emit('routerViewLoaded'));
 
+    const route = useRoute();
+    const router = useRouter();
+
+    const postsLoading = ref(true);
     const postCount = ref(0);
     const curPage = ref(1);
     const posts = ref([]);
     const filterUser = ref(null);
 
+    const updateFilterUser = async (route) => {
+      const id = route.params.uid;
+      if (id !== undefined) {
+        const [status, body] = await request(
+          'GET', `/user/${id}`, {});
+        if (status >= 200 && status < 299) {
+          filterUser.value = {
+            id: body.id,
+            nickname: body.nickname
+          };
+        }
+      } else {
+        filterUser.value = null;
+      }
+    };
+
+    const orderBy = ref(0);
+    const orderByDescription = [ '按最近活动时间降序', '按主帖更新时间降序' ];
+
     const updatePosts = async () => {
+      postsLoading.value = true;
+
       const params = {
         page: curPage.value,
-        size: 100,
-        orderByReply: true,
+        size: 10,
+        orderByReply: (orderBy.value === 0),
       };
       if (filterUser.value !== null) {
         params.userId = filterUser.value.id;
@@ -86,14 +144,44 @@ export default {
           updatedAt: new Date(post.updated),
         }));
       }
+
+      postsLoading.value = false;
     };
-    await updatePosts();
+
+    const setOrderBy = async (s, refreshAndKeepRoute) => {
+      if (refreshAndKeepRoute || orderBy.value !== s) {
+        orderBy.value = s;
+        await updatePosts();
+        if (!refreshAndKeepRoute) {
+          router.replace({
+            path: route.fullPath,
+            query: s === 0 ? null : { order: s }
+          });
+        }
+      }
+    };
+
+    watch(route, async (oldRoute, newRoute) => {
+      if (Number(newRoute.params.uid) !== (filterUser.value || {}).id) {
+        await updateFilterUser(newRoute);
+        await setOrderBy(newRoute.query.order || 0, true);
+        EventBus.emit('routerViewLoaded');
+      }
+    });
+
+    await updateFilterUser(route);
+    await setOrderBy(route.query.order || 0, true);
 
     return {
+      postsLoading,
       postCount,
       curPage,
       posts,
       filterUser,
+
+      orderBy,
+      orderByDescription,
+      setOrderBy,
 
       updatePosts,
     };

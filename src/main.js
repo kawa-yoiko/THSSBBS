@@ -15,12 +15,13 @@ const router = createRouter({
     { path: '/', component: PageLanding },
     { path: '/login', component: PageLanding },
     { path: '/posts', component: PagePosts },
+    { path: '/posts/by/:uid(\\d+)', component: PagePosts },
     { path: '/post/:id(\\d+|create)', component: PagePost },
     { path: '/hello', component: HelloWorld },
   ],
   async scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      await EventBus.wait('routerViewLoaded', 5000);
+      await EventBus.wait('routerViewLoaded', 0);
       return savedPosition;
     } else {
       return { left: 0, top: 0 };
