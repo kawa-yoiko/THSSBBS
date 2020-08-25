@@ -65,6 +65,8 @@
     </router-link>
     <br>
   </div>
+  <widget-pagination
+    :total='Math.ceil(postCount / pageSize)' :current='curPage' @change='setPage' />
 </template>
 
 <script>
@@ -183,11 +185,9 @@ export default {
       }
     };
 
-    // TODO: Fix /posts/by/:uid
-    watch(route.query, async (_n, _o) => {
-      if (Number(route.params.uid || -1) !== (filterUser.value || { id: -1 }).id
-          || Number(route.query.order || 0) !== orderBy.value
-          || Number(route.query.page || 1) !== curPage.value) {
+    watch(route, async (_n, _o) => {
+      if (Number(route.params.uid || -1) !==
+          (filterUser.value || { id: -1 }).id) {
         await updateFilterUser(route);
         await setOrderBy(Number(route.query.order || 0), true);
         await setPage(Number(route.query.page || 1), true);
