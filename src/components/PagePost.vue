@@ -202,10 +202,10 @@ export default {
           lookup[reply.id] = reply.replies;
         });
         // Show replies
-        if (visibleReplies === null) {
+        if (visibleReplies === null ||
+          !restoreVisibleReplies(sortedList, visibleReplies))
+        {
           markRepliesAsVisible(sortedList, 6, [4, 2, 1]);
-        } else {
-          restoreVisibleReplies(sortedList, visibleReplies);
         }
         // Highlight the parent and show the last reply
         // Note that `lookup[0]` automatically gives `sortedList`

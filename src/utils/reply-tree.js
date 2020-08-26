@@ -47,11 +47,14 @@ const saveVisibleReplies = (replies) => {
 };
 
 const restoreVisibleReplies = (replies, set) => {
+  let found = false;
   const traverse = (r) => {
     r.visible = (set[r.id] === true ? true : false);
+    if (r.visible) found = true;
     r.replies.forEach(traverse);
   };
   replies.forEach(traverse);
+  return found;
 };
 
 export {
