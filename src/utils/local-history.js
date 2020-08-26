@@ -33,10 +33,13 @@ const addHistory = (id) => {
   saveHistoryPosts(arr);
 };
 
+const clearHistory = () => saveHistoryPosts([]);
+
 export {
   getSavedPosts,
   savePost,
 
   addHistory,
   getHistoryPosts,
+  clearHistory,
 };

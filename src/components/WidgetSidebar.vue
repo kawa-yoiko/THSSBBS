@@ -1,19 +1,26 @@
 <template>
-  <h3>收藏夹</h3>
-  <div v-for='post in savedPosts' :key='post.id'
-      class='ui card post-card'>
-    <router-link class='post-link'
-      :to='"/post/" + post.id'>
-      <i class='ui star icon'></i>{{ post.title }}
-    </router-link>
-  </div>
-  <h3>浏览历史</h3>
-  <div v-for='post in historyPosts' :key='post.id'
-      class='ui card post-card'>
-    <router-link class='post-link'
-      :to='"/post/" + post.id'>
-      <i class='ui history icon'></i>{{ post.title }}
-    </router-link>
+  <div style='position: relative; top: 0'>
+    <h4>收藏夹</h4>
+    <div v-for='post in savedPosts' :key='post.id'
+        class='ui card post-card'>
+      <router-link class='post-link'
+        :to='"/post/" + post.id'>
+        <i class='ui star icon'></i>{{ post.title }}
+      </router-link>
+    </div>
+    <h4>浏览历史</h4>
+    <button class='ui right floated mini compact basic icon button'
+        style='position: relative; top: -6.3ex; margin-bottom: -6.3ex'
+        @click='clearHistoryPosts'>
+      <i class='trash icon'></i>
+    </button>
+    <div v-for='post in historyPosts' :key='post.id'
+        class='ui card post-card'>
+      <router-link class='post-link'
+        :to='"/post/" + post.id'>
+        <i class='ui history icon'></i>{{ post.title }}
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -21,7 +28,9 @@
 import { ref } from 'vue';
 
 import { getPostTitleCached } from '../utils/api';
-import { getSavedPosts, getHistoryPosts } from '../utils/local-history';
+import {
+  getSavedPosts, getHistoryPosts, clearHistory
+} from '../utils/local-history';
 import EventBus from '../utils/event-bus';
 
 export default {
@@ -44,7 +53,7 @@ export default {
 
     const updateSavedPosts = async () => {
       const ids = getSavedPosts();
-      ids.reverse().splice(5);
+      ids.reverse().splice(10);
       savedPosts.value = await fetchPostList(ids);
     };
     updateSavedPosts().then();
@@ -57,9 +66,15 @@ export default {
     updateHistoryPosts().then();
     EventBus.on('historyPostsChanged', updateHistoryPosts);
 
+    const clearHistoryPosts = () => {
+      clearHistory();
+      EventBus.emit('historyPostsChanged');
+    }
+
     return {
       savedPosts,
       historyPosts,
+      clearHistoryPosts,
     };
   },
 };
@@ -70,6 +85,7 @@ div.post-card {
   background: #fefcfc;
   width: 100%;
   padding: 1ex 1em;
+  margin: 1.5ex 0;
   transition: background ease-out 0.1s;
 }
 div.post-card:hover {
@@ -79,6 +95,5 @@ div.post-card:hover {
 .post-link {
   font-size: 0.9rem;
   color: #333;
-  font-weight: bold;
 }
 </style>

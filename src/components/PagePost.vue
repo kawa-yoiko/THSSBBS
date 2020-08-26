@@ -214,15 +214,11 @@ export default {
         body.scrollHeight, body.offsetHeight,
         html.clientHeight, html.scrollHeight, html.offsetHeight);
       if (pageSize - (window.scrollY + window.innerHeight) <= 40) {
-        if (postReplies.value !== null)
-          markRepliesAsVisible(postReplies.value, 6, [4, 2]);
+        markRepliesAsVisible(postReplies.value, 6, [4, 2]);
       }
     };
-    window.addEventListener('scroll', scrollHandler);
-
-    onUnmounted(() => {
-      window.removeEventListener('scroll', scrollHandler);
-    });
+    onMounted(() => window.addEventListener('scroll', scrollHandler));
+    onUnmounted(() => window.removeEventListener('scroll', scrollHandler));
 
     const editingPost = ref(false);
     const editingPostTitle = ref('');
@@ -276,9 +272,9 @@ export default {
       EventBus.emit('savedPostsChanged');
     };
 
-    const updateWithRoute = async () => {
+    const updateWithRoute = async (always) => {
       const newId = route.params.id === 'create' ? -1 : Number(route.params.id);
-      if (postId.value !== newId) {
+      if (always || postId.value !== newId) {
         postId.value = newId;
         // XXX: The following two operations might be better
         // merged into `refreshPost()`
@@ -286,12 +282,14 @@ export default {
         postSaved.value = getSavedPosts().indexOf(newId) !== -1;
         await refreshPost();
         // Add to history
-        addHistory(newId);
-        EventBus.emit('historyPostsChanged');
+        if (newId !== -1) {
+          addHistory(newId);
+          EventBus.emit('historyPostsChanged');
+        }
       }
     }
     watch(route, async (_n, _o) => await updateWithRoute());
-    await updateWithRoute();
+    await updateWithRoute(true);
 
     return {
       postId,
