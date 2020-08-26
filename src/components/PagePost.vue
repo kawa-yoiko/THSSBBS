@@ -79,7 +79,20 @@
     <div class='post'>
       <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost(0)' />
     </div>
-    <p>{{ postRepliesCount }} 条回复</p>
+    <p style='margin: 3ex 0 1ex 0'>
+      <span>{{ postRepliesCount }} 条回复</span>
+      <button @click='expandAllOp'
+          class='ui compact mini basic icon button'
+          style='margin-left: 1em'
+          data-tooltip='只看楼主'>
+        <i class='bullhorn icon'></i>
+      </button>
+      <button @click='expandAllSelf'
+          class='ui compact mini basic icon button'
+          data-tooltip='只看自己'>
+        <i class='user icon'></i>
+      </button>
+    </p>
     <div class='replies'>
       <div class='post' v-for='reply in postReplies' :key='reply.id'>
         <widget-reply :level='0'
@@ -110,7 +123,8 @@ import WidgetEditor from './WidgetEditor';
 import { request, getLocalUser, putPostTitleCached } from '../utils/api';
 import EventBus from '../utils/event-bus';
 import {
-  markRepliesAsVisible, saveVisibleReplies, restoreVisibleReplies
+  markRepliesAsVisible, showAllAndExpandAllBy,
+  saveVisibleReplies, restoreVisibleReplies
 } from '../utils/reply-tree.js';
 import parseContent from '../utils/parse-content';
 import { savePost, getSavedPosts, addHistory } from '../utils/local-history';
@@ -189,8 +203,7 @@ export default {
         });
         // Show replies
         if (visibleReplies === null) {
-          //markRepliesAsVisible(sortedList, 10, [8, 6, 4, 2]);
-          markRepliesAsVisible(sortedList, 6, [1, 1]);
+          markRepliesAsVisible(sortedList, 6, [4, 2, 1]);
         } else {
           restoreVisibleReplies(sortedList, visibleReplies);
         }
@@ -219,6 +232,15 @@ export default {
     };
     onMounted(() => window.addEventListener('scroll', scrollHandler));
     onUnmounted(() => window.removeEventListener('scroll', scrollHandler));
+
+    const localUser = ref(null);
+
+    const expandAllOp = () => {
+      showAllAndExpandAllBy(postReplies.value, postUser.id);
+    };
+    const expandAllSelf = () => {
+      showAllAndExpandAllBy(postReplies.value, localUser.value.id);
+    }
 
     const editingPost = ref(false);
     const editingPostTitle = ref('');
@@ -291,6 +313,9 @@ export default {
     watch(route, async (_n, _o) => await updateWithRoute());
     await updateWithRoute(true);
 
+    // Previous requests may set local user to null
+    localUser.value = await getLocalUser() || {};
+
     return {
       postId,
       postUser,
@@ -309,8 +334,10 @@ export default {
       startEditingPost,
       doneEditingPost,
 
-      // Previous requests may set local user to null
-      localUser: await getLocalUser() || {},
+      expandAllOp,
+      expandAllSelf,
+
+      localUser,
 
       refreshPostInProgress,
       refreshPost,

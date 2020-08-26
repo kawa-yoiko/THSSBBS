@@ -19,6 +19,23 @@ const markRepliesAsVisible = (replies, limit, propagate) => {
   return total;
 };
 
+const showAllAndExpandAllBy = (replies, uid) => {
+  let contains = false;
+  replies.forEach((r) => {
+    const isBy = (r.user.id === uid);
+    const subContains = showAllAndExpandAllBy(r.replies, uid);
+    if (isBy || subContains) {
+      contains = true;
+      r.visible = true;
+      r.folded = false;
+    } else {
+      r.visible = false;
+      r.folded = true;
+    }
+  });
+  return contains;
+}
+
 const saveVisibleReplies = (replies) => {
   const set = {};
   const traverse = (r) => {
@@ -39,6 +56,7 @@ const restoreVisibleReplies = (replies, set) => {
 
 export {
   markRepliesAsVisible,
+  showAllAndExpandAllBy,
   saveVisibleReplies,
   restoreVisibleReplies,
 };
