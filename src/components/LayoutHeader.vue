@@ -1,20 +1,24 @@
 <template>
   <div class='ui top fixed borderless menu'>
     <router-link class='item' to='/'>
-      THSSBBS
+      <span>THSSBBS</span>
     </router-link>
     <template v-if='user !== null'>
       <router-link class='item' to='/posts'>
-        Posts
+        <span>帖子</span>
+      </router-link>
+      <router-link class='item' to='/saved'>
+        <span>收藏</span>
       </router-link>
       <div class='right menu'>
-        <div class='ui simple dropdown item'>
-          {{ user.nickname }}
+        <router-link class='ui simple dropdown item'
+            :to='"/posts/by/" + user.id'>
+          <span>{{ user.nickname }}</span>
           <div class='menu'>
             <button class='item'
               @click='logOut'>Log Out</button>
           </div>
-        </div>
+        </router-link>
       </div>
     </template>
   </div>

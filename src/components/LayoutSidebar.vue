@@ -1,6 +1,8 @@
 <template>
   <div v-if='loggedIn'>
-    <h4>收藏夹</h4>
+    <router-link to='/saved' style='color: #333'>
+      <h4>收藏夹</h4>
+    </router-link>
     <div v-for='post in savedPosts' :key='post.id'
         class='ui card post-card'>
       <router-link class='post-link'
