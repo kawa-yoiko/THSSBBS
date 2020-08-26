@@ -46,7 +46,6 @@ export default {
       logInInProgress.value = false;
 
       if (status >= 200 && status < 299) {
-        console.log(body);
         setLocalJWT(body.jwt);
         router.replace(returnDest);
         EventBus.emit('logged-in');

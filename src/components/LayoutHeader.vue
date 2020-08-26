@@ -11,14 +11,20 @@
         <span>收藏</span>
       </router-link>
       <div class='right menu'>
-        <router-link class='ui simple dropdown item'
-            :to='"/posts/by/" + user.id'>
-          <span>{{ user.nickname }}</span>
+        <div class='ui simple dropdown item'>
+          <router-link 
+              style='color: #333'
+              :to='"/posts/by/" + user.id'>
+            <span>{{ user.nickname }}</span>
+          </router-link>
           <div class='menu'>
+            <!-- NOTE:
+              "Unhandled error during execution of scheduler flush. This is likely a Vue internals bug."
+              happens if this is also a link to /posts/by/uid -->
             <button class='item'
               @click='logOut'>Log Out</button>
           </div>
-        </router-link>
+        </div>
       </div>
     </template>
   </div>

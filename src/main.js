@@ -6,6 +6,7 @@ import HelloWorld from './components/HelloWorld.vue'
 import PageLanding from './components/PageLanding.vue'
 import PagePosts from './components/PagePosts.vue'
 import PagePost from './components/PagePost.vue'
+import PageSaved from './components/PageSaved.vue'
 
 import EventBus from './utils/event-bus'
 
@@ -17,6 +18,7 @@ const router = createRouter({
     { path: '/posts', component: PagePosts },
     { path: '/posts/by/:uid(\\d+)', component: PagePosts },
     { path: '/post/:id(\\d+|create)', component: PagePost },
+    { path: '/saved', component: PageSaved },
     { path: '/hello', component: HelloWorld },
   ],
   async scrollBehavior(to, from, savedPosition) {
