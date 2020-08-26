@@ -1,5 +1,5 @@
 <template>
-  <div style='position: relative; top: 0'>
+  <div v-if='loggedIn'>
     <h4>收藏夹</h4>
     <div v-for='post in savedPosts' :key='post.id'
         class='ui card post-card'>
@@ -22,19 +22,22 @@
       </router-link>
     </div>
   </div>
+  <div v-else>
+    请登录后访问收藏夹和浏览历史
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue';
 
-import { getPostTitleCached } from '../utils/api';
+import { getLocalUser, getPostTitleCached } from '../utils/api';
 import {
   getSavedPosts, getHistoryPosts, clearHistory
 } from '../utils/local-history';
 import EventBus from '../utils/event-bus';
 
 export default {
-  name: 'WidgetSidebar',
+  name: 'LayoutSidebar',
   setup() {
     const savedPosts = ref([]);
     const historyPosts = ref([]);
@@ -56,14 +59,12 @@ export default {
       ids.reverse().splice(10);
       savedPosts.value = await fetchPostList(ids);
     };
-    updateSavedPosts().then();
     EventBus.on('savedPostsChanged', updateSavedPosts);
 
     const updateHistoryPosts = async () => {
       const ids = getHistoryPosts();
       historyPosts.value = await fetchPostList(ids);
     };
-    updateHistoryPosts().then();
     EventBus.on('historyPostsChanged', updateHistoryPosts);
 
     const clearHistoryPosts = () => {
@@ -71,7 +72,21 @@ export default {
       EventBus.emit('historyPostsChanged');
     }
 
+    const loggedIn = ref(false);
+    const updateLoggedInState = async () => {
+      loggedIn.value = (await getLocalUser()) !== null;
+      if (loggedIn.value) {
+        updateSavedPosts().then();
+        updateHistoryPosts().then();
+      }
+    };
+    EventBus.on('logged-in', updateLoggedInState);
+    EventBus.on('logged-out', () => loggedIn.value = false);
+
+    updateLoggedInState().then();
+
     return {
+      loggedIn,
       savedPosts,
       historyPosts,
       clearHistoryPosts,

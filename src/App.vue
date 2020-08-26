@@ -15,7 +15,7 @@
       </Suspense>
     </div>
     <div class='three wide column' style='background: rgba(216, 216, 216, 0.1)'>
-      <widget-sidebar />
+      <layout-sidebar />
     </div>
     <div class='two wide column'></div>
   </div>
@@ -23,7 +23,7 @@
 
 <script>
 import LayoutHeader from './components/LayoutHeader.vue'
-import WidgetSidebar from './components/WidgetSidebar.vue'
+import LayoutSidebar from './components/LayoutSidebar.vue'
 
 export default {
   name: 'App',
@@ -31,7 +31,7 @@ export default {
   },
   components: {
     LayoutHeader,
-    WidgetSidebar,
+    LayoutSidebar,
   }
 }
 </script>
