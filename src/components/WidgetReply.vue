@@ -1,7 +1,11 @@
 <template>
-  <div class='reply-container' v-if='reply.visible'>
+  <div class='reply-container' v-if='reply.visible'
+      :style='reply.user.id === localUserId ? "border-color: #f9b88e" :
+              reply.user.id === opUserId ? "border-color: #aaa" : ""'>
     <span style='color: #aaa; margin-right: 0.5em'>
-      <widget-user-badge :user='reply.user' />
+      <widget-user-badge :user='reply.user'
+        :isOp='reply.user.id === opUserId'
+        :isLocal='reply.user.id === localUserId' />
       <span style='margin: 0 0.25em'></span>
       <widget-time :time='reply.createdAt' />
       <template v-if='reply.createdAt < reply.updatedAt'>
@@ -69,8 +73,8 @@
     <div v-for='subreply in reply.replies' :key='subreply.id'>
       <widget-reply :level='level + 1'
         :postId='postId' :reply='subreply'
-        :localUserId='localUserId'
-          @foldOrUnfold='subreply.folded = !subreply.folded'
+        :opUserId='opUserId' :localUserId='localUserId'
+        @foldOrUnfold='subreply.folded = !subreply.folded'
         @editOrReplyComplete='onEditOrReplyComplete'/>
     </div>
     <div v-if='reply.replies.length > 0 &&
@@ -100,7 +104,7 @@ export default {
     WidgetEditor,
   },
   props: [
-    'level', 'postId', 'reply', 'localUserId',
+    'level', 'postId', 'reply', 'localUserId', 'opUserId',
     'onEditOrReplyComplete', 'onFoldOrUnfold'
   ],
   setup(props) {

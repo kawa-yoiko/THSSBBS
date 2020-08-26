@@ -84,7 +84,7 @@
       <div class='post' v-for='reply in postReplies' :key='reply.id'>
         <widget-reply :level='0'
           :postId='postId' :reply='reply'
-          :localUserId='localUser.id'
+          :opUserId='postUser.id' :localUserId='localUser.id'
           @foldOrUnfold='reply.folded = !reply.folded'
           @editOrReplyComplete='refreshPost'/>
       </div>
