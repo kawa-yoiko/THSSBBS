@@ -6,7 +6,7 @@ import axios from 'axios';
 // - Request failed with status code ***
 
 const ax = axios.create({
-  baseURL: 'http://simplebbs.iterator-traits.com/api/v1/',
+  baseURL: '/api/v1',
   timeout: 3000,
 });
 
