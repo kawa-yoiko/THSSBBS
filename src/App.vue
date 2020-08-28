@@ -55,7 +55,7 @@ body {
   background: #fffefd;
 }
 
-:not(span):not(i) {
+:not(span):not(i):not(pre):not(code) {
   font-family: 'Open Sans', sans-serif !important;
   letter-spacing: 0.5px;
   line-height: 1.5;
@@ -67,6 +67,9 @@ body {
 i.icon {
   font-family: Icons !important;
 }
+i.icon.outline {
+  font-family: outline-icons !important;
+}
 
 .ui.input input:focus,
 .ui.form textarea:focus,
@@ -77,15 +80,11 @@ i.icon {
 /* Highlighting */
 @import '../node_modules/highlight.js/styles/rainbow.css';
 
-.post-content pre, .post-content code,
-.post-content-preview pre, .post-content-preview code
-{
+pre, code {
   font-family: 'Source Code Pro', monospace !important;
 }
 
-.post-content pre,
-.post-content-preview pre
-{
+pre {
   padding: 1ex 1em;
   border-radius: 6px;
   /* Match this with the theme used */

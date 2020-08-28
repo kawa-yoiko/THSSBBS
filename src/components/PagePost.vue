@@ -68,7 +68,7 @@
             :class='"ui basic right floated small icon button" +
               (postSaved ? " orange" : "")'
             style='position: relative; top: -4px'>
-          <i class='star outline icon'></i>
+          <i :class='"star icon" + (postSaved ? "" : " outline")'></i>
         </button>
       </p>
       <hr style='background: #aaa; border: none; height: 1px'>
