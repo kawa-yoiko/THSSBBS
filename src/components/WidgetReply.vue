@@ -19,18 +19,18 @@
     </span>
     <button @click='startComposingReply'
         class='ui compact mini basic icon button'
-        data-tooltip='Reply'>
+        data-tooltip='回复'>
       <i class='reply icon'></i>
     </button>
     <button @click='onFoldOrUnfold'
         class='ui compact mini basic icon button'
-        :data-tooltip='reply.folded ? "Unfold" : "Fold"'>
+        :data-tooltip='reply.folded ? "展开" : "折叠"'>
       <i :class='(reply.folded ? "plus" : "minus") + " icon"'></i>
     </button>
     <button v-if='reply.user.id === localUserId'
         @click='startEditingReply(reply)'
         class='ui compact mini basic icon button'
-        data-tooltip='Edit'>
+        data-tooltip='编辑'>
       <i class='edit icon'></i>
     </button>
   <template v-if='!reply.folded'>
@@ -44,22 +44,22 @@
         <button @click='doneEditingReply'
           :class='"ui basic small green button" +
             (sendEditReplyInProgress ? " loading disabled" : "")'>
-          <i class='ui check icon'></i>Save
+          <i class='ui check icon'></i>保存
         </button>
         <button @click='previewing = !previewing'
             v-if='!sendEditReplyInProgress'
             class='ui basic small blue button'>
           <template v-if='previewing'>
-            <i class='ui edit icon'></i>Write
+            <i class='ui edit icon'></i>写作
           </template>
           <template v-else>
-            <i class='ui file alternate outline icon'></i>Preview
+            <i class='ui file alternate outline icon'></i>预览
           </template>
         </button>
         <button @click='editingReply = false'
             v-if='!sendEditReplyInProgress'
             class='ui basic small button'>
-          <i class='ui x icon'></i>Cancel
+          <i class='ui x icon'></i>取消
         </button>
       </div>
     </div>
@@ -79,7 +79,7 @@
     </div>
     <div v-if='reply.replies.length > 0 &&
         !reply.replies.every((x) => x.visible)'>
-      <button @click='expand' class='ui basic mini button'>Continue this thread</button>
+      <button @click='expand' class='ui basic mini button'>展开此讨论串</button>
     </div>
   </template>
   </div>

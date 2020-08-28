@@ -11,22 +11,22 @@
       <button @click='sendReply'
         :class='"ui basic small orange button" +
           (sendReplyInProgress ? " loading disabled" : "")'>
-        <i class='ui paper plane icon'></i>Post
+        <i class='ui paper plane icon'></i>发布
       </button>
       <button @click='previewing = !previewing'
           v-if='!sendReplyInProgress'
           class='ui basic small blue button'>
         <template v-if='previewing'>
-          <i class='ui edit icon'></i>Write
+          <i class='ui edit icon'></i>写作
         </template>
         <template v-else>
-          <i class='ui file alternate outline icon'></i>Preview
+          <i class='ui file alternate outline icon'></i>预览
         </template>
       </button>
       <button @click='onCancel'
           v-if='parentId !== 0 && !sendReplyInProgress'
           class='ui basic small button'>
-        <i class='ui x icon'></i>Cancel
+        <i class='ui x icon'></i>取消
       </button>
     </div>
   </div>

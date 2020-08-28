@@ -52,6 +52,7 @@ body {
 
 #main {
   margin-bottom: 60px;
+  background: #fffefd;
 }
 
 :not(span):not(i) {

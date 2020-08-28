@@ -1,8 +1,9 @@
 <template>
   <router-link to='/post/create'
-      class='ui labeled icon orange large fluid button'>
+      class='ui labeled icon orange large fluid button'
+      style='letter-spacing: 1.5px'>
     <i class='plus icon'></i>
-    Create post
+    发布新帖
   </router-link>
   <div style='margin-top: 0' class='ui three column grid'>
     <div class='six wide column'>

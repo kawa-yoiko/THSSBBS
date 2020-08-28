@@ -19,29 +19,29 @@
           <button @click='doneEditingPost'
             :class='"ui basic small orange button" +
               (sendEditPostInProgress ? " loading" : "")'>
-            <i class='ui paper plane icon'></i>Post
+            <i class='ui paper plane icon'></i>发布
           </button>
         </div>
         <div v-else>
           <button @click='doneEditingPost'
             :class='"ui basic small green button" +
               (sendEditPostInProgress ? " loading disabled" : "")'>
-            <i class='ui check icon'></i>Done
+            <i class='ui check icon'></i>保存
           </button>
           <button @click='previewing = !previewing'
               v-if='!sendEditPostInProgress'
               class='ui basic small blue button'>
             <template v-if='previewing'>
-              <i class='ui edit icon'></i>Write
+              <i class='ui edit icon'></i>写作
             </template>
             <template v-else>
-              <i class='ui file alternate outline icon'></i>Preview
+              <i class='ui file alternate outline icon'></i>预览
             </template>
           </button>
           <button @click='editingPost = false'
               v-if='!sendEditPostInProgress'
               class='ui basic small button'>
-            <i class='ui x icon'></i>Cancel
+            <i class='ui x icon'></i>取消
           </button>
         </div>
       </div>
@@ -62,7 +62,7 @@
             @click='startEditingPost'
             class='ui basic right floated small button'
             style='position: relative; top: -4px'>
-          <i class='pencil alternate icon'></i>Edit
+          <i class='pencil alternate icon'></i>编辑
         </button>
         <button @click='saveCurrentPost'
             :class='"ui basic right floated small icon button" +
@@ -105,7 +105,7 @@
     <div id='thread-more'
       v-if='postReplies.length > 0 &&
         !postReplies[postReplies.length - 1].visible'>
-      Scroll down to load more!
+      ↓ 向下滚动显示更多
     </div>
   </div>
 </template>
