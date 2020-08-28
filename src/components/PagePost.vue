@@ -153,6 +153,8 @@ export default {
     const postReplies = ref(null);
     const postRepliesCount = ref(0);
 
+    const localUser = ref(null);
+
     const refreshPostInProgress = ref(false);
     // `parentToUpdate` is the parent reply of the newly created reply
     // or 0 if a new top-level reply has been created
@@ -212,6 +214,17 @@ export default {
         if (parentToUpdate !== undefined) {
           const replyListToHighlight = lookup[parentToUpdate];
           markRepliesAsVisible(replyListToHighlight, 999999, []);
+          // Get the last comment by the current user
+          let newId = -1;
+          for (let i = replyListToHighlight.length - 1; i >= 0; i--)
+            if (replyListToHighlight[i].user.id === localUser.value.id) {
+              newId = replyListToHighlight[i].id;
+              break;
+            }
+          setTimeout(() => {
+            document.getElementById(`reply-${newId}`)
+              .scrollIntoView({ behavior: 'smooth' });
+          }, 1000);
         }
         postReplies.value = sortedList;
       }
@@ -233,10 +246,8 @@ export default {
     onMounted(() => window.addEventListener('scroll', scrollHandler));
     onUnmounted(() => window.removeEventListener('scroll', scrollHandler));
 
-    const localUser = ref(null);
-
     const expandAllOp = () => {
-      showAllAndExpandAllBy(postReplies.value, postUser.id);
+      //showAllAndExpandAllBy(postReplies.value, postUser.id);
     };
     const expandAllSelf = () => {
       showAllAndExpandAllBy(postReplies.value, localUser.value.id);

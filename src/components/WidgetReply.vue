@@ -2,6 +2,9 @@
   <div class='reply-container' v-if='reply.visible'
       :style='reply.user.id === localUserId ? "border-color: #f9b88e" :
               reply.user.id === opUserId ? "border-color: #aaa" : ""'>
+    <span :id='"reply-" + reply.id'
+      style='width: 0; height: 0; position: relative; top: -80px'
+    ></span>
     <span style='color: #aaa; margin-right: 0.5em'>
       <widget-user-badge :user='reply.user'
         :isOp='reply.user.id === opUserId'
@@ -13,8 +16,8 @@
       </template>
       <strong style='margin-left: 0.5em'>
         <span>^{{ reply.id }}</span>
-        <span style='color: #88f' v-if='reply.parent !== 0'>
-          → ^{{ reply.parent }}</span>
+        <span style='color: #da9; margin-left: 0.25rem' v-if='reply.parent !== 0'>
+          <i class='ui reply icon'></i>{{ reply.parent }}</span>
       </strong>
     </span>
     <button @click='startComposingReply'
