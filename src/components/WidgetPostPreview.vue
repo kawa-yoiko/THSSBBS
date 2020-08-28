@@ -16,8 +16,10 @@
         <widget-time :time='post.createdAt' prefix='发布于' />
         <span v-if='post.lastRepliedAt > post.createdAt'>
           <br>
-          <widget-user-badge :user='post.lastReplyUser' />
-          <span style='margin: 0 0.25em'></span>
+          <template v-if='post.lastReplyUser !== null'>
+            <widget-user-badge :user='post.lastReplyUser' />
+            <span style='margin: 0 0.25em'></span>
+          </template>
           <widget-time :time='post.lastRepliedAt' prefix='活动于' />
         </span>
       </p>

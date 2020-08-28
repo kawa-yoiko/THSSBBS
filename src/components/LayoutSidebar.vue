@@ -10,6 +10,9 @@
         <i class='ui star icon'></i>{{ post.title }}
       </router-link>
     </div>
+    <router-link v-if='numMoreSavedPosts > 0' to='/saved'>
+      更早的 {{ numMoreSavedPosts }} 篇……
+    </router-link>
     <h4>浏览历史</h4>
     <button class='ui right floated mini compact basic icon button'
         style='position: relative; top: -6.3ex; margin-bottom: -6.3ex'
@@ -42,6 +45,7 @@ export default {
   name: 'LayoutSidebar',
   setup() {
     const savedPosts = ref([]);
+    const numMoreSavedPosts = ref(0);
     const historyPosts = ref([]);
 
     const fetchPostList = async (ids) => {
@@ -58,7 +62,7 @@ export default {
 
     const updateSavedPosts = async () => {
       const ids = getSavedPosts();
-      ids.reverse().splice(10);
+      numMoreSavedPosts.value = ids.reverse().splice(10).length;
       savedPosts.value = await fetchPostList(ids);
     };
     EventBus.on('savedPostsChanged', updateSavedPosts);
@@ -90,6 +94,7 @@ export default {
     return {
       loggedIn,
       savedPosts,
+      numMoreSavedPosts,
       historyPosts,
       clearHistoryPosts,
     };
