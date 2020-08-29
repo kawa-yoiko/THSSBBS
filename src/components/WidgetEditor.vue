@@ -18,7 +18,7 @@
       </tr>
     </table>
     <p style='color: #aaa; margin-bottom: 1.5ex'>
-      <a href='https://t.me/addstickers/MunikoSH'>Muniko</a> - Shirohi Hitomi
+      <a target="_blank" href='https://t.me/addstickers/MunikoSH'>Muniko</a> - Shirohi Hitomi
     </p>
   </widget-modal>
 
@@ -38,7 +38,8 @@
           ["行内代码", "`() => {}`"],
           ["代码块", "```rust\nfn main() {\n  println!(\"Hello World!\");\n}\n```"],
           ["链接", "[blog](https://kawa.moe/)"],
-          ["图片", "![muniko](https://kawa.moe/MunikoSH/19.png)"],
+          ["图片", "![muniko](https://kawa.moe/MunikoSH/19.png)",
+            "推荐使用 <a target=\"_blank\" href=\"https://sm.ms/\">sm.ms</a> 等图床服务"],
           ["分隔线", "---"],
           ["标题", "# h1\n## h2\n### h3"],
           ["引文", "> blockquote"],
@@ -47,7 +48,8 @@
           ["表格", "| foo | bar | baz |\n| --- | --- | --- |\n| qwq | qwq | qwq |\n| quq | quq | quq |"],
         ]' :key='index'>
           <td>{{ elm[0] }}</td>
-          <td v-html='elm[1].replace(/\n/g, "<br>").replace(/ /g, "&nbsp;")'></td>
+          <td v-html='elm[1].replace(/\n/g, "<br>").replace(/ /g, "&nbsp;") +
+            (elm[2] ? "<p style=\"color: #aaa; margin-top: 1.5ex\">" + elm[2] + "</p>" : "")'></td>
           <td v-html='parseContent(elm[1])'></td>
         </tr>
       </tbody>
