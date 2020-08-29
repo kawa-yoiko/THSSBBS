@@ -38,6 +38,7 @@ export default {
 
 <style>
 @import './assets/Semantic-UI-CSS/semantic.min.css';
+@import './assets/fonts.css';
 
 body {
   font-family: 'Open Sans', sans-serif;
