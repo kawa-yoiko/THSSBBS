@@ -1,5 +1,5 @@
 <template>
-  <layout-header></layout-header>
+  <layout-header />
   <div class='ui three column divided grid'>
     <div class='two wide column'></div>
     <div id='main' class='nine wide column' style='min-height: 400px'>
@@ -19,11 +19,13 @@
     </div>
     <div class='two wide column'></div>
   </div>
+  <layout-footer />
 </template>
 
 <script>
 import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutSidebar from './components/LayoutSidebar.vue'
+import LayoutFooter from './components/LayoutFooter.vue'
 
 export default {
   name: 'App',
@@ -32,6 +34,7 @@ export default {
   components: {
     LayoutHeader,
     LayoutSidebar,
+    LayoutFooter,
   }
 }
 </script>
@@ -52,7 +55,7 @@ body {
 }
 
 #main {
-  margin-bottom: 60px;
+  padding-bottom: 60px;
   background: #fffefd;
 }
 

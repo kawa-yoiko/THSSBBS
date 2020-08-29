@@ -18,11 +18,17 @@
             <span>{{ user.nickname }}</span>
           </router-link>
           <div class='menu'>
+            <router-link class='link item'
+                :to='"/posts/by/" + user.id'>
+              <i class='ui folder open outline icon'></i>我的帖子
+            </router-link>
             <!-- NOTE:
               "Unhandled error during execution of scheduler flush. This is likely a Vue internals bug."
               happens if this is also a link to /posts/by/uid -->
             <button class='item'
-              @click='logOut'>Log Out</button>
+                @click='logOut'>
+              <i class='ui sign out icon'></i>退出登录
+            </button>
           </div>
         </div>
       </div>
