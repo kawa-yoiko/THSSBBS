@@ -14,8 +14,8 @@
           (sendReplyInProgress ? " loading disabled" : "")'>
         <i class='ui paper plane icon'></i>发布
       </button>
-    <template v-if='!sendReplyInProgress'>
       <button @click='previewing = !previewing'
+          v-if='!sendReplyInProgress'
           class='ui basic small blue button'>
         <template v-if='previewing'>
           <i class='ui edit icon'></i>写作
@@ -24,15 +24,16 @@
           <i class='ui file alternate outline icon'></i>预览
         </template>
       </button>
-      <button @click='editor.modalStickers.show()'
-          class='ui basic small green icon button'>
-        <i class='ui smile outline icon'></i>
-      </button>
-      <button @click='editor.modalHelp.show()'
-          class='ui basic small yellow icon button'>
-        <i class='ui question icon'></i>
-      </button>
-    </template>
+      <template v-if='!previewing && !sendReplyInProgress'>
+        <button @click='editor.modalStickers.show()'
+            class='ui basic small green icon button'>
+          <i class='ui smile outline icon'></i>
+        </button>
+        <button @click='editor.modalHelp.show()'
+            class='ui basic small yellow icon button'>
+          <i class='ui question icon'></i>
+        </button>
+      </template>
       <button @click='onCancel'
           v-if='parentId !== 0 && !sendReplyInProgress'
           class='ui basic small button'>

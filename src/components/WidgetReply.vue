@@ -39,13 +39,13 @@
   <template v-if='!reply.folded'>
     <div v-if='editingReply' style='margin: 1ex 0'>
       <div class='ui form' style='margin: 1ex 0'>
-        <widget-editor :preview='previewing ? editingReplyContent : null'>
+        <widget-editor :preview='previewing ? editingReplyContent : null' ref='editor'>
           <textarea rows='7' v-model='editingReplyContent' />
         </widget-editor>
       </div>
       <div>
         <button @click='doneEditingReply'
-          :class='"ui basic small green button" +
+          :class='"ui basic small orange button" +
             (sendEditReplyInProgress ? " loading disabled" : "")'>
           <i class='ui check icon'></i>保存
         </button>
@@ -59,6 +59,16 @@
             <i class='ui file alternate outline icon'></i>预览
           </template>
         </button>
+        <template v-if='!previewing && !sendEditReplyInProgress'>
+          <button @click='editor.modalStickers.show()'
+              class='ui basic small green icon button'>
+            <i class='ui smile outline icon'></i>
+          </button>
+          <button @click='editor.modalHelp.show()'
+              class='ui basic small yellow icon button'>
+            <i class='ui question icon'></i>
+          </button>
+        </template>
         <button @click='editingReply = false'
             v-if='!sendEditReplyInProgress'
             class='ui basic small button'>
@@ -116,6 +126,7 @@ export default {
     const replyContentRendered =
       computed(() => parseContent(replyContent.value));
 
+    const editor = ref(null);
     const editingReply = ref(false);
     const editingReplyContent = ref('');
     const previewing = ref(false);
@@ -162,6 +173,7 @@ export default {
       replyContent,
       replyContentRendered,
 
+      editor,
       editingReply,
       editingReplyContent,
       previewing,

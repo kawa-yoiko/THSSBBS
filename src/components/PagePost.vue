@@ -9,22 +9,22 @@
     <div v-if='editingPost' class='ui form' style='margin: 1ex 0'>
       <input class='edit-post-title' style='margin-bottom: 1ex'
         v-model='editingPostTitle' placeholder='Title' />
-      <widget-editor :preview='previewing ? editingPostContent : null'>
+      <widget-editor :preview='previewing ? editingPostContent : null' ref='editor'>
         <textarea class='edit-post-content'
           style='margin-bottom: 1ex; line-height: 1.5' rows='15'
           v-model='editingPostContent' placeholder='Content' />
       </widget-editor>
       <div>
-        <div v-if='postId === -1'>
+        <template v-if='postId === -1'>
           <button @click='doneEditingPost'
             :class='"ui basic small orange button" +
               (sendEditPostInProgress ? " loading" : "")'>
             <i class='ui paper plane icon'></i>发布
           </button>
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
           <button @click='doneEditingPost'
-            :class='"ui basic small green button" +
+            :class='"ui basic small orange button" +
               (sendEditPostInProgress ? " loading disabled" : "")'>
             <i class='ui check icon'></i>保存
           </button>
@@ -38,12 +38,24 @@
               <i class='ui file alternate outline icon'></i>预览
             </template>
           </button>
+        </template>
+        <template v-if='!previewing && !sendEditPostInProgress'>
+          <button @click='editor.modalStickers.show()'
+              class='ui basic small green icon button'>
+            <i class='ui smile outline icon'></i>
+          </button>
+          <button @click='editor.modalHelp.show()'
+              class='ui basic small yellow icon button'>
+            <i class='ui question icon'></i>
+          </button>
+        </template>
+        <template v-if='postId !== -1'>
           <button @click='editingPost = false'
               v-if='!sendEditPostInProgress'
               class='ui basic small button'>
             <i class='ui x icon'></i>取消
           </button>
-        </div>
+        </template>
       </div>
     </div>
     <div v-else>
@@ -253,6 +265,7 @@ export default {
       showAllAndExpandAllBy(postReplies.value, localUser.value.id);
     }
 
+    const editor = ref(null);
     const editingPost = ref(false);
     const editingPostTitle = ref('');
     const editingPostContent = ref('');
@@ -337,6 +350,7 @@ export default {
       postReplies,
       postRepliesCount,
 
+      editor,
       editingPost,
       editingPostTitle,
       editingPostContent,
