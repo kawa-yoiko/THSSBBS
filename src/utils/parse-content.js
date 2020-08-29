@@ -14,18 +14,30 @@ marked.setOptions({
 
 const renderer = {
   image(href, title, text) {
+    let isSticker = false;
+
     if (!href) {
       href = stickerImage[text];
+      isSticker = true;
       if (!href) return text;
+    } else {
+      isSticker = (stickerName[href] !== undefined);
     }
 
     let out = '<img src="' + href + '" alt="' + text + '"';
     if (title)
       out += ' title="' + title + '"';
-    if (stickerName[href] !== undefined)
+    if (isSticker)
       out += ' style="width: 120px"';
 
     out += this.options.xhtml ? '/>' : '>';
+
+    if (!isSticker) {
+      out =
+      `<div style="max-height: 800px; overflow: scroll; cursor: pointer"` +
+      ` onclick="window.open('${href}');">${out}</div>`;
+    }
+
     return out;
   }
 };
