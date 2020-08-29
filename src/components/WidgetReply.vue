@@ -66,7 +66,7 @@
         </button>
       </div>
     </div>
-    <p v-else v-html='replyContent'></p>
+    <p v-else v-html='replyContentRendered' class='reply-content'></p>
     <div v-if='composingReply' class='reply-container'>
       <widget-compose-reply
         :post-id='postId' :parent-id='reply.id'
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 import WidgetComposeReply from './WidgetComposeReply.vue';
 import WidgetUserBadge from './WidgetUserBadge';
@@ -97,6 +97,7 @@ import WidgetTime from './WidgetTime';
 import WidgetEditor from './WidgetEditor';
 import { request } from '../utils/api';
 import { markRepliesAsVisible } from '../utils/reply-tree.js';
+import parseContent from '../utils/parse-content';
 
 export default {
   name: 'WidgetReply',
@@ -112,6 +113,8 @@ export default {
   ],
   setup(props) {
     const replyContent = ref(props.reply.content);
+    const replyContentRendered =
+      computed(() => parseContent(replyContent.value));
 
     const editingReply = ref(false);
     const editingReplyContent = ref('');
@@ -157,6 +160,8 @@ export default {
 
     return {
       replyContent,
+      replyContentRendered,
+
       editingReply,
       editingReplyContent,
       previewing,
@@ -179,5 +184,9 @@ export default {
   padding-left: 15px;
   border-left: #ddd solid 2px;
   margin-bottom: 12px;
+}
+
+.reply-content {
+  overflow: scroll;
 }
 </style>

@@ -2,13 +2,13 @@
   <div :class='"modal" + (visible ? " visible" : "")'
       ref='outer' @click='checkAndHide'>
     <div class='modal-content'>
-      <slot />
+      <slot v-if='visibleReally' />
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 export default {
   name: 'WidgetModal',
@@ -23,12 +23,21 @@ export default {
       if (e.target === outer.value) hide();
     };
 
+    const visibleReally = ref(false);
+    watch(visible, (newVisible, oldVisible) => {
+      if (newVisible)
+        visibleReally.value = true;
+      else
+        setTimeout(() => visibleReally.value = false, 300);
+    });
+
     return {
       visible,
       outer,
       show,
       hide,
       checkAndHide,
+      visibleReally,
     };
   }
 };

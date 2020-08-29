@@ -5,10 +5,12 @@ const insertAtCursor = (el, text) => {
     const q = el.selectionEnd;
     el.value = s.substring(0, p) + text + s.substring(q);
     el.setSelectionRange(p + text.length, p + text.length);
-    el.focus();
   } else {
     el.value += text;
+    el.setSelectionRange(text.length, text.length);
   }
+  el.focus();
+  el.dispatchEvent(new Event('input'));
 };
 
 export {

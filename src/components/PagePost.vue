@@ -367,10 +367,10 @@ export default {
   background: #fefcfc;
   width: 100%;
   padding: 1ex 1em;
-  overflow: hidden;
 }
 .post-content {
   margin: 1.5ex 0 1ex 0;
+  overflow: scroll;
 }
 .edit-post-title {
   width: 100%;
