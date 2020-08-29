@@ -1,8 +1,7 @@
 const stickerImage = {};
 
 for (let i = 0; i < 40; i++)
-  stickerImage[`Muniko_${i}`] =
-    `https://kawa.moe/MunikoSH/${i}.png`;
+  stickerImage[`Muniko_${i}`] = `/stickers/MunikoSH/${i}.png`;
 
 const stickerName = {};
 

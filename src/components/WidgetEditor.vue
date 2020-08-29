@@ -25,7 +25,7 @@
   <widget-modal ref='modalHelp'>
     <h2>Markdown Cheatsheet</h2>
     <table class='ui small celled orange table markdown-cheatsheet'
-        style='margin-bottom: 1.5ex; width: 800px'>
+        style='margin-bottom: 1.5ex; width: 840px'>
       <thead><tr>
         <th style='width: 20%'>元素</th>
         <th style='width: 40%'>语法</th>
