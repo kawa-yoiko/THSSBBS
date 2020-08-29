@@ -20,8 +20,8 @@ import EventBus from '../utils/event-bus';
 export default {
   name: 'PageLanding',
   async setup() {
-    const inputUsername = ref('2018013379');
-    const inputPassword = ref('937194');
+    const inputUsername = ref('20180');
+    const inputPassword = ref('');
     const logInInProgress = ref(false);
 
     const route = useRoute();
