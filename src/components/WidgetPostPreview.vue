@@ -60,7 +60,7 @@ export default {
   position: relative;
   top: -1ex;
   margin-bottom: -1ex;
-  background: linear-gradient(transparent, #fdfbfb);
+  background: linear-gradient(rgba(253, 251, 251, 0), rgba(253, 251, 251, 1));
   transition: background ease-out 0.1s;
 }
 
@@ -75,6 +75,6 @@ export default {
   background: #ffffff;
 }
 .post-content-card:hover .post-content-preview-shadow {
-  background: linear-gradient(transparent, #ffffff);
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
 }
 </style>
