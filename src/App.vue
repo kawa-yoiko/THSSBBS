@@ -92,4 +92,14 @@ pre {
   background: #474949;
   color: #d1d9e1;
 }
+
+::-webkit-scrollbar * {
+  background: transparent;
+}
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 192, 64, 0.3) !important;
+}
 </style>

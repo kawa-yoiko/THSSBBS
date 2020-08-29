@@ -384,7 +384,7 @@ export default {
 }
 .post-content {
   margin: 1.5ex 0 1ex 0;
-  overflow: scroll;
+  overflow: auto;
 }
 .edit-post-title {
   width: 100%;

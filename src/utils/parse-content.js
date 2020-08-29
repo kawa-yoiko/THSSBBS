@@ -34,7 +34,7 @@ const renderer = {
 
     if (!isSticker) {
       out =
-      `<div style="max-height: 800px; overflow: scroll; cursor: pointer"` +
+      `<div style="max-height: 800px; overflow-y: auto; cursor: pointer"` +
       ` onclick="window.open('${href}');">${out}</div>`;
     }
 
