@@ -106,7 +106,7 @@
       </button>
     </p>
     <div class='replies'>
-      <div class='post' v-for='reply in postReplies' :key='reply.id'>
+      <div class='post' v-for='reply in (postReplies || [])' :key='reply.id'>
         <widget-reply :level='0'
           :postId='postId' :reply='reply'
           :opUserId='postUser.id' :localUserId='localUser.id'
@@ -115,7 +115,7 @@
       </div>
     </div>
     <div id='thread-more'
-      v-if='postReplies.length > 0 &&
+      v-if='(postReplies || []).length > 0 &&
         !postReplies[postReplies.length - 1].visible'>
       ↓ 向下滚动显示更多
     </div>

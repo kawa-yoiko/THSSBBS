@@ -24,11 +24,18 @@ export default {
     };
 
     const visibleReally = ref(false);
+    const keyUpHandler = (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') hide();
+    };
     watch(visible, (newVisible, oldVisible) => {
-      if (newVisible)
+      if (newVisible === oldVisible) return;
+      if (newVisible) {
         visibleReally.value = true;
-      else
+        document.addEventListener('keyup', keyUpHandler);
+      } else {
         setTimeout(() => visibleReally.value = false, 300);
+        document.removeEventListener('keyup', keyUpHandler);
+      }
     });
 
     return {
