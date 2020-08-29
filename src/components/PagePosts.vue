@@ -129,17 +129,32 @@ export default {
       postsLoading.value = false;
     };
 
+    // XXX: Workaround only!! vue-router might have been misbehaving
+    // TODO: Research and report to vue-router if confirmed and no dupliate
+    // If a vue-router upgrade breaks, update or remove as appropriate
+    let _query = route.query;
+    const getQuery = () => _query;
+    const replaceQuery = (query) => {
+      // router.replace({ query });
+      let queryStr = '';
+      for (const [k, v] of Object.entries(query))
+        queryStr += (queryStr ? '&' : '') + k + '=' + encodeURIComponent(v);
+      window.history.replaceState(
+        Object.assign(window.history.state, {
+          current: route.fullPath.split('?')[0] + '?' + queryStr
+        }),
+        '', '?' + queryStr);
+      _query = query;
+    };
+
     const setOrderBy = async (s, keepRoute) => {
       if (keepRoute || orderBy.value !== s) {
         orderBy.value = s;
         if (!keepRoute) {
-          const query = Object.assign({}, route.query);
+          const query = Object.assign({}, getQuery());
           if (s === 0) delete query.order;
           else query.order = s;
-          router.replace({
-            path: route.fullPath,
-            query,
-          });
+          replaceQuery(query);
           await updatePosts();
         }
       }
@@ -149,12 +164,9 @@ export default {
       if (keepRoute || curPage.value !== p) {
         curPage.value = p;
         if (!keepRoute) {
-          const query = Object.assign({}, route.query);
+          const query = Object.assign({}, getQuery());
           query.page = p;
-          router.replace({
-            path: route.fullPath,
-            query,
-          });
+          replaceQuery(query);
           await updatePosts();
         }
       }

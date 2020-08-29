@@ -2,12 +2,12 @@ import axios from 'axios';
 
 // Possible error messages:
 // - Network Error
-// - timeout of 3000ms exceeded
+// - timeout of 15000ms exceeded
 // - Request failed with status code ***
 
 const ax = axios.create({
   baseURL: '/api/v1',
-  timeout: 3000,
+  timeout: 15000,
 });
 
 // Local cache for credentials and user profile
