@@ -9,7 +9,7 @@
         </template>
         <template #fallback>
           <div style='width: 100%; margin-top: 6ex'>
-            <div class='ui active loader'></div>
+            <div class='ui active loader' style='z-index: 1'></div>
           </div>
         </template>
       </Suspense>

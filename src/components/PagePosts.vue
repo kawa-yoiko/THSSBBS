@@ -36,7 +36,7 @@
   </div>
   <widget-pagination
     :total='Math.ceil(postCount / pageSize)' :current='curPage' @change='setPage' />
-  <div v-if='postsLoading' style='margin-top: 3ex'>
+  <div v-if='postsLoading' style='margin-top: 3ex; margin-bottom: 3ex'>
     <div class='ui active centered inline loader'></div>
   </div>
   <div v-else v-for='post in posts' :key='post.id'>
