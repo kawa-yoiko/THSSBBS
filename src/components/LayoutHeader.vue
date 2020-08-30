@@ -1,7 +1,14 @@
 <template>
   <div class='ui top fixed borderless menu'>
+    <widget-modal ref='notificationModal'>
+      <div style='padding: 1.5ex 1em 2ex 1em'>
+        <h3>奇怪的问题出现了！</h3>
+        <p>{{ notificationText }}</p>
+      </div>
+    </widget-modal>
+
     <router-link class='item' to='/'>
-      <span>THSSBBS</span>
+      <span style='font-weight: bold'>THSSBBS</span>
     </router-link>
     <template v-if='user !== null'>
       <router-link class='item' to='/posts'>
@@ -37,14 +44,17 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import WidgetModal from './WidgetModal';
 import { request, getLocalJWT, setLocalJWT, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
+import { setNotificationHandlers } from '../utils/notification';
 
 export default {
   name: 'LayoutHeader',
+  components: { WidgetModal },
   setup() {
     const user = ref(null);
 
@@ -83,10 +93,18 @@ export default {
         'PATCH', '/logout', {}, prevJWT);
     };
 
+    // Notifiation modal dialogue
+    const notificationModal = ref(null);
+    const notificationText = ref('');
+    onMounted(() => setNotificationHandlers(
+      notificationModal, notificationText));
+
     return {
       user,
-
       logOut,
+
+      notificationModal,
+      notificationText,
     };
   }
 }

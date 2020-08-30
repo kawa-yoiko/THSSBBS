@@ -1,8 +1,8 @@
 <template>
   <h1>登录</h1>
   <div class='ui form'>
-    <input v-model='inputUsername' placeholder='username' />
-    <input v-model='inputPassword' placeholder='password' type='password' />
+    <input v-model='inputUsername' placeholder='用户名' />
+    <input v-model='inputPassword' placeholder='密码' type='password' />
   </div>
   <button :class='"ui fluid orange button" +
     (logInInProgress ? " loading disabled" : "")'
