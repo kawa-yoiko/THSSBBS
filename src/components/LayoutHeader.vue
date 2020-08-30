@@ -2,7 +2,7 @@
   <div class='ui top fixed borderless menu'>
     <widget-modal ref='notificationModal'>
       <div style='padding: 1.5ex 1em 2ex 1em'>
-        <h3>奇怪的问题出现了！</h3>
+        <h3>{{ _t.Problem }}</h3>
         <p>{{ notificationText }}</p>
       </div>
     </widget-modal>
@@ -12,10 +12,10 @@
     </router-link>
     <template v-if='user !== null'>
       <router-link class='item' to='/posts'>
-        <span>帖子</span>
+        <span>{{ _t.Posts }}</span>
       </router-link>
       <router-link class='item' to='/saved'>
-        <span>收藏</span>
+        <span>{{ _t.Saved }}</span>
       </router-link>
       <div class='right menu'>
         <div class='ui simple dropdown item'>
@@ -27,14 +27,14 @@
           <div class='menu'>
             <router-link class='link item'
                 :to='"/posts/by/" + user.id'>
-              <i class='ui folder open outline icon'></i>我的帖子
+              <i class='ui folder open outline icon'></i>{{ _t.MyPosts }}
             </router-link>
             <!-- NOTE:
               "Unhandled error during execution of scheduler flush. This is likely a Vue internals bug."
               happens if this is also a link to /posts/by/uid -->
             <button class='item'
                 @click='logOut'>
-              <i class='ui sign out icon'></i>退出登录
+              <i class='ui sign out icon'></i>{{ _t.LogOut }}
             </button>
           </div>
         </div>
@@ -51,6 +51,7 @@ import WidgetModal from './WidgetModal';
 import { request, getLocalJWT, setLocalJWT, getLocalUser } from '../utils/api';
 import EventBus from '../utils/event-bus';
 import { setNotificationHandlers } from '../utils/notification';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'LayoutHeader',
@@ -100,6 +101,8 @@ export default {
       notificationModal, notificationText));
 
     return {
+      _t,
+
       user,
       logOut,
 

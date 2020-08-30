@@ -1,12 +1,13 @@
 <template>
-  <h1>登录</h1>
+  <h1>{{ _t.LogIn }}</h1>
   <div class='ui form'>
-    <input v-model='inputUsername' placeholder='用户名' />
-    <input v-model='inputPassword' placeholder='密码' type='password' />
+    <input v-model='inputUsername' :placeholder='_t.Username' />
+    <input v-model='inputPassword' :placeholder='_t.Password' type='password' />
   </div>
   <button :class='"ui fluid orange button" +
     (logInInProgress ? " loading disabled" : "")'
-    @click='logIn'>Log In</button>
+    style='letter-spacing: 1.5px'
+    @click='logIn'>{{ _t.LogIn }}</button>
 </template>
 
 <script>
@@ -16,6 +17,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { request, setLocalJWT, getLocalUser } from '../utils/api';
 import { emitNotification } from '../utils/notification';
 import EventBus from '../utils/event-bus';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'PageLanding',
@@ -57,6 +59,8 @@ export default {
     };
 
     return {
+      _t,
+
       inputUsername,
       inputPassword,
       logInInProgress,

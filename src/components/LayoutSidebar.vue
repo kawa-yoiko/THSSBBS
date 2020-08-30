@@ -1,7 +1,7 @@
 <template>
   <div v-if='loggedIn'>
     <router-link to='/saved' style='color: #333'>
-      <h4 style='margin-bottom: 1rem'>收藏夹</h4>
+      <h4 style='margin-bottom: 1rem'>{{ _t.SavedList }}</h4>
     </router-link>
     <div v-for='post in savedPosts' :key='post.id'
         class='ui card post-card'>
@@ -11,9 +11,9 @@
       </router-link>
     </div>
     <router-link v-if='numMoreSavedPosts > 0' to='/saved'>
-      更早的 {{ numMoreSavedPosts }} 篇……
+      {{ _t.SavedMore(numMoreSavedPosts) }}
     </router-link>
-    <h4>浏览历史</h4>
+    <h4>{{ _t.History }}</h4>
     <button class='ui right floated mini compact basic icon button'
         style='position: relative; top: -6.3ex; margin-bottom: -6.3ex'
         @click='clearHistoryPosts'>
@@ -28,7 +28,7 @@
     </div>
   </div>
   <div v-else>
-    请登录后访问收藏夹和浏览历史
+    {{ _t.LogInToViewSidebar }}
   </div>
 </template>
 
@@ -40,6 +40,7 @@ import {
   getSavedPosts, getHistoryPosts, clearHistory
 } from '../utils/local-history';
 import EventBus from '../utils/event-bus';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'LayoutSidebar',
@@ -92,6 +93,8 @@ export default {
     updateLoggedInState().then();
 
     return {
+      _t,
+
       loggedIn,
       savedPosts,
       numMoreSavedPosts,
