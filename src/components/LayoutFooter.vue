@@ -1,6 +1,11 @@
 <template>
   <div class='ui divider' style='margin: 0 5%; margin-top: 2ex'></div>
   <div style='text-align: center; margin-top: 1ex; margin-bottom: 4ex'>
+    <span class='qwq' style='font-weight: bold'
+        v-for='locale in ["zh", "en"]' :key='locale'>
+      <a href='javascript:;' @click='changeLanguage(locale)'>{{ locale }}</a>
+    </span>
+    <br>
     <span class='qwq'>THSSBBS</span>
     <span class='qwq'>&copy; Lyu Shiqing 2020</span>
     <span class='qwq'>
@@ -15,18 +20,25 @@
         the Hippocratic License 2.1</a>
     </span>
     <br>
-  <!--
     <span class='qwq'>
-      With 
+      With brimming
       <i class='heart icon' style='transform: rotate(5deg); font-size: 1em'></i>
       <i class='star icon' style='transform: rotate(-18deg); font-size: 0.5em; position: relative; top: -14px; margin-left: -8px'></i>
       <i class='star icon' style='transform: rotate(10deg); font-size: 0.3em; position: relative; top: -2px; margin-left: -12px'></i>
+      to Kuriko 🌰
     </span>
-  -->
   </div>
 </template>
 
 <script>
+import { changeLanguage } from '../utils/i18n';
+
+export default {
+  name: 'LayoutFooter',
+  setup() {
+    return { changeLanguage };
+  },
+};
 </script>
 
 <style scoped>

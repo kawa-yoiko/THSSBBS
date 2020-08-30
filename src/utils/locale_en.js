@@ -1,4 +1,6 @@
 export default {
+  name: 'en',
+
   Problem: 'A strange problem occurred!',
   Posts: 'Posts',
   Saved: 'Saved',
@@ -10,7 +12,7 @@ export default {
   LogIn: 'Log in',
 
   SavedList: 'Saved posts',
-  SavedMore: (x) => `Earlier ${x} post${x == 1 ? '' : 's'}...`,
+  SavedMore: (x) => `${x} earlier post${x === 1 ? '' : 's'}...`,
   History: 'Visit history',
   LogInToViewSidebar: 'Please log in to access saved posts and visit history',
 
@@ -18,6 +20,8 @@ export default {
   RecentPosts: 'Recent posts',
   PostedBy: 'Posted by: ',
   OrderBy: ['Order by most recent activity', 'Order by most recent original post update'],
+
+  PostsInTotal: (x) => `${x} post${x === 1 ? '' : 's'} in total`,
 
   ReplyTo: 'Reply to ',
   PostVerb: 'Post',
@@ -28,7 +32,7 @@ export default {
   UpdatedAtLeft: ' (Updated ',
   UpdatedAtRight: ')',
   Edit: 'Edit',
-  Replies: (x) => `${x} repl${x == 1 ? 'y' : 'ies'}`,
+  Replies: (x) => `${x} repl${x === 1 ? 'y' : 'ies'}`,
   OnlyOP: 'Show only OP\'s replies',
   OnlySelf: 'Show only my replies',
   ScrollDownForMore: '↓ Scroll down to load more',
@@ -68,4 +72,6 @@ export default {
     and
     <a href='https://github.github.com/gfm/'>the GFM specs</a>
   `,
+
+  MomentJSLocale: 'en',
 };

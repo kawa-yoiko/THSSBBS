@@ -10,6 +10,8 @@ import { ref, watchEffect } from 'vue';
 import moment from '../../node_modules/moment/dist/moment.js';
 import zhLocale from '../../node_modules/moment/dist/locale/zh-cn.js';
 
+import { _t } from '../utils/i18n';
+
 export default {
   name: 'WidgetTime',
   props: ['time', 'prefix'],
@@ -31,6 +33,7 @@ export default {
     };
 
     watchEffect(() => {
+      moment.locale(_t.value.MomentJSLocale);
       const time = moment(props.time);
       const diff = moment().diff(time, 'hours');
       const s = (props.prefix || '') +

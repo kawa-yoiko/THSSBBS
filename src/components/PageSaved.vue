@@ -1,6 +1,6 @@
 <template>
-  <span style='font-size: 1.28571429rem; font-weight: bold'>收藏夹</span>
-  <span style='color: #aaa; margin-left: 1em'>共 {{ postCount }} 篇帖子</span>
+  <span style='font-size: 1.28571429rem; font-weight: bold'>{{ _t.SavedList }}</span>
+  <span style='color: #aaa; margin-left: 1em'>{{ _t.PostsInTotal(postCount) }}</span>
   <div>
     <widget-pagination
       :total='Math.ceil(postCount / pageSize)' :current='curPage' @change='setPage' />
@@ -24,6 +24,7 @@ import WidgetPagination from './WidgetPagination';
 import WidgetPostPreview from './WidgetPostPreview';
 import { request } from '../utils/api';
 import { getSavedPosts } from '../utils/local-history';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'PageSaved',
@@ -83,6 +84,8 @@ export default {
     await updatePosts();
 
     return {
+      _t,
+
       postCount,
       pageSize,
       curPage,

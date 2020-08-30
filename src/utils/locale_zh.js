@@ -1,4 +1,6 @@
 export default {
+  name: 'zh',
+
   Problem: '奇怪的问题出现了！',
   Posts: '帖子',
   Saved: '收藏',
@@ -18,6 +20,8 @@ export default {
   RecentPosts: '最近帖子',
   PostedBy: '发布者：',
   OrderBy: ['按最近活动时间降序', '按主帖更新时间降序'],
+
+  PostsInTotal: (x) => `共 ${x} 篇帖子`,
 
   ReplyTo: '回复 ',
   PostVerb: '发布',
@@ -66,4 +70,6 @@ export default {
     与
     <a href='https://github.github.com/gfm/'>GFM 标准</a>
   `,
+
+  MomentJSLocale: 'zh-cn',
 };
