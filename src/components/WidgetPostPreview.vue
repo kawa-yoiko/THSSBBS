@@ -13,14 +13,14 @@
       <p style='color: #aaa'>
         <widget-user-badge :user='post.user' />
         <span style='margin: 0 0.25em'></span>
-        <widget-time :time='post.createdAt' prefix='发布于' />
+        <widget-time :time='post.createdAt' :prefix='_t.PostedAt' />
         <span v-if='post.lastRepliedAt > post.createdAt'>
           <br>
           <template v-if='post.lastReplyUser !== null'>
             <widget-user-badge :user='post.lastReplyUser' />
             <span style='margin: 0 0.25em'></span>
           </template>
-          <widget-time :time='post.lastRepliedAt' prefix='活动于' />
+          <widget-time :time='post.lastRepliedAt' :prefix='_t.ActiveAt' />
         </span>
       </p>
     </div>
@@ -32,6 +32,7 @@
 import WidgetUserBadge from './WidgetUserBadge';
 import WidgetTime from './WidgetTime';
 import parseContent from '../utils/parse-content';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'WidgetPostPreview',
@@ -42,6 +43,7 @@ export default {
   },
   setup() {
     return {
+      _t,
       parseContent,
     };
   }

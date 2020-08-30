@@ -19,23 +19,23 @@
           <button @click='doneEditingPost'
             :class='"ui basic small orange button" +
               (sendEditPostInProgress ? " loading" : "")'>
-            <i class='ui paper plane icon'></i>发布
+            <i class='ui paper plane icon'></i>{{ _t.PostVerb }}
           </button>
         </template>
         <template v-else>
           <button @click='doneEditingPost'
             :class='"ui basic small orange button" +
               (sendEditPostInProgress ? " loading disabled" : "")'>
-            <i class='ui check icon'></i>保存
+            <i class='ui check icon'></i>{{ _t.Save }}
           </button>
           <button @click='previewing = !previewing'
               v-if='!sendEditPostInProgress'
               class='ui basic small blue button'>
             <template v-if='previewing'>
-              <i class='ui edit icon'></i>写作
+              <i class='ui edit icon'></i>{{ _t.Write }}
             </template>
             <template v-else>
-              <i class='ui file alternate outline icon'></i>预览
+              <i class='ui file alternate outline icon'></i>{{ _t.Preview }}
             </template>
           </button>
         </template>
@@ -53,7 +53,7 @@
           <button @click='editingPost = false'
               v-if='!sendEditPostInProgress'
               class='ui basic small button'>
-            <i class='ui x icon'></i>取消
+            <i class='ui x icon'></i>{{ _t.Cancel }}
           </button>
         </template>
       </div>
@@ -68,13 +68,13 @@
         <span style='margin: 0 0.25em'></span>
         <widget-time :time='postCreatedAt' />
         <template v-if='postCreatedAt < postUpdatedAt'>
-          <span>（更新于 <widget-time :time='postUpdatedAt' />）</span>
+          <span><widget-time :time='postUpdatedAt' :prefix='_t.UpdatedAtLeft' />{{ _t.UpdatedAtRight }}</span>
         </template>
         <button v-if='postUser.id === localUser.id'
             @click='startEditingPost'
             class='ui basic right floated small button'
             style='position: relative; top: -4px'>
-          <i class='pencil alternate icon'></i>编辑
+          <i class='pencil alternate icon'></i>{{ _t.Edit }}
         </button>
         <button @click='saveCurrentPost'
             :class='"ui basic right floated small icon button" +
@@ -92,16 +92,16 @@
       <widget-compose-reply :post-id='postId' :parent-id='0' @sent='refreshPost(0)' />
     </div>
     <p style='margin: 3ex 0 1ex 0'>
-      <span>{{ postRepliesCount }} 条回复</span>
+      <span style='font-weight: bold'>{{ _t.Replies(postRepliesCount) }}</span>
       <button @click='expandAllOp'
           class='ui compact mini basic icon button'
           style='margin-left: 1em'
-          data-tooltip='只看楼主'>
+          :data-tooltip='_t.OnlyOP'>
         <i class='bullhorn icon'></i>
       </button>
       <button @click='expandAllSelf'
           class='ui compact mini basic icon button'
-          data-tooltip='只看自己'>
+          :data-tooltip='_t.OnlySelf'>
         <i class='user icon'></i>
       </button>
     </p>
@@ -117,7 +117,7 @@
     <div id='thread-more'
       v-if='(postReplies || []).length > 0 &&
         !postReplies[postReplies.length - 1].visible'>
-      ↓ 向下滚动显示更多
+      {{ _t.ScrollDownForMore }}
     </div>
   </div>
 </template>
@@ -140,6 +140,7 @@ import {
 } from '../utils/reply-tree.js';
 import parseContent from '../utils/parse-content';
 import { savePost, getSavedPosts, addHistory } from '../utils/local-history';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'PagePost',
@@ -341,6 +342,8 @@ export default {
     localUser.value = await getLocalUser() || {};
 
     return {
+      _t,
+
       postId,
       postUser,
       postTitle,

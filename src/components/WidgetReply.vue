@@ -12,7 +12,7 @@
       <span style='margin: 0 0.25em'></span>
       <widget-time :time='reply.createdAt' />
       <template v-if='reply.createdAt < reply.updatedAt'>
-        <span>（<widget-time :time='reply.updatedAt' prefix='更新于' />）</span>
+        <span><widget-time :time='reply.updatedAt' :prefix='_t.UpdatedAtLeft' />{{ _t.UpdatedAtRight }}</span>
       </template>
       <strong style='margin-left: 0.5em'>
         <span>^{{ reply.id }}</span>
@@ -22,18 +22,18 @@
     </span>
     <button @click='startComposingReply'
         class='ui compact mini basic icon button'
-        data-tooltip='回复'>
+        :data-tooltip='_t.ReplyVerb'>
       <i class='reply icon'></i>
     </button>
     <button @click='onFoldOrUnfold'
         class='ui compact mini basic icon button'
-        :data-tooltip='reply.folded ? "展开" : "折叠"'>
+        :data-tooltip='reply.folded ? _t.Unfold : _t.Fold'>
       <i :class='(reply.folded ? "plus" : "minus") + " icon"'></i>
     </button>
     <button v-if='reply.user.id === localUserId'
         @click='startEditingReply(reply)'
         class='ui compact mini basic icon button'
-        data-tooltip='编辑'>
+        :data-tooltip='_t.Edit'>
       <i class='edit icon'></i>
     </button>
   <template v-if='!reply.folded'>
@@ -47,16 +47,16 @@
         <button @click='doneEditingReply'
           :class='"ui basic small orange button" +
             (sendEditReplyInProgress ? " loading disabled" : "")'>
-          <i class='ui check icon'></i>保存
+          <i class='ui check icon'></i>{{ _t.Save }}
         </button>
         <button @click='previewing = !previewing'
             v-if='!sendEditReplyInProgress'
             class='ui basic small blue button'>
           <template v-if='previewing'>
-            <i class='ui edit icon'></i>写作
+            <i class='ui edit icon'></i>{{ _t.Write }}
           </template>
           <template v-else>
-            <i class='ui file alternate outline icon'></i>预览
+            <i class='ui file alternate outline icon'></i>{{ _t.Preview }}
           </template>
         </button>
         <template v-if='!previewing && !sendEditReplyInProgress'>
@@ -72,7 +72,7 @@
         <button @click='editingReply = false'
             v-if='!sendEditReplyInProgress'
             class='ui basic small button'>
-          <i class='ui x icon'></i>取消
+          <i class='ui x icon'></i>{{ _t.Cancel }}
         </button>
       </div>
     </div>
@@ -92,7 +92,7 @@
     </div>
     <div v-if='reply.replies.length > 0 &&
         !reply.replies.every((x) => x.visible)'>
-      <button @click='expand' class='ui basic mini button'>展开此讨论串</button>
+      <button @click='expand' class='ui basic mini button'>{{ _t.ContinueThisThread }}</button>
     </div>
   </template>
   </div>
@@ -108,6 +108,7 @@ import WidgetEditor from './WidgetEditor';
 import { request } from '../utils/api';
 import { markRepliesAsVisible } from '../utils/reply-tree.js';
 import parseContent from '../utils/parse-content';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'WidgetReply',
@@ -170,6 +171,8 @@ export default {
     };
 
     return {
+      _t,
+
       replyContent,
       replyContentRendered,
 

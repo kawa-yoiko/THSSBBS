@@ -3,7 +3,7 @@
       class='ui labeled icon orange large fluid button'
       style='letter-spacing: 1.5px'>
     <i class='plus icon'></i>
-    发布新帖
+    {{ _t.CreateNewPost }}
   </router-link>
   <div style='margin-top: 0' class='ui three column grid'>
     <div class='six wide column'>
@@ -13,22 +13,22 @@
       <span style='margin-left: 0.5em;
           position: absolute; bottom: 1.8ex;
           font-size: 1.28571429rem; font-weight: bold'>
-        最近帖子</span>
+        {{ _t.RecentPosts }}</span>
     </div>
     <div class='ten wide column'>
       <div class='ui right floated mini compact menu'>
         <router-link class='ui mini link item'
             v-if='filterUser !== null'
             to='/posts'>
-          发布者：<span style='font-weight: bold'>{{ filterUser.nickname }}</span>
+          {{ _t.PostedBy }}<span style='font-weight: bold'>{{ filterUser.nickname }}</span>
           <i class='x icon' style='margin: 0 0 0 0.35714286em'></i>
         </router-link>
         <div class='ui mini simple dropdown item'>
-          {{ orderByDescription[orderBy] }}
+          {{ _t.OrderBy[orderBy] }}
           <i class='dropdown icon'></i>
           <div class='menu'>
-            <div class='item' @click='setOrderBy(0)'>{{ orderByDescription[0] }}</div>
-            <div class='item' @click='setOrderBy(1)'>{{ orderByDescription[1] }}</div>
+            <div class='item' @click='setOrderBy(0)'>{{ _t.OrderBy[0] }}</div>
+            <div class='item' @click='setOrderBy(1)'>{{ _t.OrderBy[1] }}</div>
           </div>
         </div>
       </div>
@@ -54,6 +54,7 @@ import WidgetPagination from './WidgetPagination';
 import WidgetPostPreview from './WidgetPostPreview';
 import { request } from '../utils/api';
 import EventBus from '../utils/event-bus';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'PagePosts',
@@ -92,7 +93,6 @@ export default {
     };
 
     const orderBy = ref(0);
-    const orderByDescription = [ '按最近活动时间降序', '按主帖更新时间降序' ];
 
     const updatePosts = async () => {
       postsLoading.value = true;
@@ -189,6 +189,8 @@ export default {
     await updatePosts();
 
     return {
+      _t,
+
       postsLoading,
       postCount,
       curPage,
@@ -196,7 +198,6 @@ export default {
       filterUser,
 
       orderBy,
-      orderByDescription,
       setOrderBy,
 
       pageSize,

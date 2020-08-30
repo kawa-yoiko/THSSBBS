@@ -4,7 +4,7 @@
       <widget-editor :preview='previewing ? replyContents : null' ref='editor'>
         <textarea ref='textarea'
           style='line-height: 1.5' rows='7' v-model='replyContents'
-          :placeholder='"Reply to " + (parentId !== 0 ? "^" + parentId : "#" + postId)'
+          :placeholder='_t.ReplyTo + (parentId !== 0 ? "^" + parentId : "#" + postId)'
           />
       </widget-editor>
     </div>
@@ -12,16 +12,16 @@
       <button @click='sendReply'
         :class='"ui basic small orange button" +
           (sendReplyInProgress ? " loading disabled" : "")'>
-        <i class='ui paper plane icon'></i>发布
+        <i class='ui paper plane icon'></i>{{ _t.PostVerb }}
       </button>
       <button @click='previewing = !previewing'
           v-if='!sendReplyInProgress'
           class='ui basic small blue button'>
         <template v-if='previewing'>
-          <i class='ui edit icon'></i>写作
+          <i class='ui edit icon'></i>{{ _t.Edit }}
         </template>
         <template v-else>
-          <i class='ui file alternate outline icon'></i>预览
+          <i class='ui file alternate outline icon'></i>{{ _t.Preview }}
         </template>
       </button>
       <template v-if='!previewing && !sendReplyInProgress'>
@@ -37,7 +37,7 @@
       <button @click='onCancel'
           v-if='parentId !== 0 && !sendReplyInProgress'
           class='ui basic small button'>
-        <i class='ui x icon'></i>取消
+        <i class='ui x icon'></i>{{ _t.Cancel }}
       </button>
     </div>
   </div>
@@ -49,6 +49,7 @@ import { ref, inject } from 'vue';
 import WidgetEditor from './WidgetEditor';
 import { request } from '../utils/api';
 import parseContent from '../utils/parse-content';
+import { _t } from '../utils/i18n';
 
 export default {
   name: 'WidgetComposeReply',
@@ -87,6 +88,8 @@ export default {
     const textarea = ref(null);
 
     return {
+      _t,
+
       replyContents,
       previewing,
       sendReplyInProgress,

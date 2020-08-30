@@ -2,25 +2,8 @@ import { ref } from 'vue';
 
 const _t = ref(null);
 
-const locale_zh = {
-  Problem: '奇怪的问题出现了！',
-  Posts: '帖子',
-  Saved: '收藏',
-  MyPosts: '我的帖子',
-  LogOut: '退出登录',
-
-  Username: '用户名',
-  Password: '密码',
-  LogIn: '登录',
-
-  SavedList: '收藏夹',
-  SavedMore: (x) => `更早的 ${x} 篇……`,
-  History: '浏览历史',
-  LogInToViewSidebar: '请登录后访问收藏夹和浏览历史',
-};
-
-const locale_en = {
-};
+import locale_zh from './locale_zh.js';
+import locale_en from './locale_en.js';
 
 _t.value = locale_zh;
 
